@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MongoPort = "27042"; // Anciennement 27017
 
 let Membre = require('./model_membre'); // Permet d'utiliser le model Membre
 let Groupe = require('./model_groupe'); // Permet d'utiliser le model Groupe
@@ -21,7 +22,7 @@ app.use(bodyParser.urlencoded({     // Pour le support des URL-encoded bodies
 app.use(cors()); // Permet d'utiliser cors
 app.use(membre_routes); // Permet d'utiliser les routes pour les membres
 
-mongoose.connect('mongodb://localhost/CRAM', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:'+MongoPort+'/CRAM', {useNewUrlParser: true});
 
 // Ma connexion à la base de données doit être faite dans ce fichier. Sinon, le programme enverra un message d'erreur: "Membre is not a constructor"
 var db = mongoose.connection;
