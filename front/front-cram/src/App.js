@@ -7,6 +7,7 @@ import InscriptionMembre from './components/membre-inscription.component';
 import ConnexionMembre from './components/membre-connexion.component';
 
 function App() {
+  /* coucou nouvelle evolution */
   return (
     <div className="App">
       <Router>
