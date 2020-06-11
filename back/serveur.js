@@ -72,7 +72,49 @@ membre_routes.route('/membre/inscription').post(function(req, res){
 });
 
 //------------------------------------------------------------------------------------------------------------------------------------------
+// Donne la liste des membres dans la base de donnée
+membre_routes.route('/membre/liste').get(function(req, res){ 
+        Membre.find(function(err, membres) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.json(membres);
+            }
+        });
+    });
+//------------------------------------------------------------------------------------------------------------------------------------------
+// Donne le profil d'un membre dans la base de donnée
+membre_routes.route('/membre/profil/:id').get(function(req, res){ 
+        let id = req.params.id;
+        console.log("doing monprofil");
+        console.log(id);
+        Membre.find({ _id: id }).populate('groupes')
+        .then(result=>{
+            res.json(result)
+            console.log("mes results",result);
+        })
+        .catch((error)=>{
+            console.log("error:",error);
+            res.status(405).json(error)
+        });
+     }); 
+     //------------------------------------------------------------------------------------------------------------------------------------------
+     // Supprime totalement le profil d'un membre dans la base de donnée
+     membre_routes.route('/membre/supprime/:id').get(function(req, res){ 
+           Membre.findByIdAndDelete(req.params.id , function(err, membre){
+           console.log(req.params.id)
+           console.log('carreau')
+                if(!membre) {
+                    res.status(404).send("membre non trouve");
+                    console.log("membre non trouvé");
+                }  else {
+                    res.status(200).send("Membre supprime");
+                console.log("Membre supprime");
+            }
+            })
+        })
 
+//------------------------------------------------------------------------------------------------------------------------------------------
 // Fonction qui converti les mots de passes en sha1
 function toSha1(mot_de_passe){
 

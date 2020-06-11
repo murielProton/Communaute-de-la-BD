@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css"; // Eu par npm install bootstrap
 
 import InscriptionMembre from './components/membre-inscription.component';
 import ConnexionMembre from './components/membre-connexion.component';
+import ProfilMembre from './components/membre-profil.component';
+import SupprimeMembre from './components/membre-supprime.component';
+import AjourMembre from './components/membre-ajour.component';
+import ListeMembres from './components/membre-liste.component';
+
 
 function App() {
   return (
@@ -13,6 +18,11 @@ function App() {
         {/* <Route path="/" exact component={Home} /> */}
         <Route path="/inscription" exact component={InscriptionMembre} />
         <Route path="/connexion" exact component={ConnexionMembre} />
+        <Route path="/profil/:id" exact component={ProfilMembre} />
+        <Route path="/supprime/:id" exact component={SupprimeMembre} />
+        <Route path="/ajour/:id" exact component={AjourMembre} />
+        <Route path="/liste" exact component={ListeMembres}/>
+
       </Router>
     </div>
   );
