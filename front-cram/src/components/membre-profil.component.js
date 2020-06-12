@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import api from '../api';
 
 
@@ -11,10 +10,11 @@ export default class ProfilMembre extends Component {
     }
     componentDidMount() {
         this.setState({ id: this.props.match.params.id });
-        let id = this.props.match.params.id;
-        let url = 'http://localhost:4242/membre/profil/'+id;
-        console.log(url);
-        axios.get(url)
+        // let id = this.props.match.params.id;
+        // let url = 'http://localhost:4242/membre/profil/'+this.props.match.params.id;
+        console.log('http://localhost:4242/membre/profil/'+this.props.match.params.id);
+        // axios.get('http://localhost:4242/membre/profil/'+this.props.match.params.id)
+        api.get('membre/profil/'+this.props.match.params.id)
             .then(response => {
                 console.log(response.data);
                 this.setState({ membres: response.data });
