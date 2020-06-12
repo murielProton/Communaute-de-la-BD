@@ -41,7 +41,7 @@ export default class ProfilMembre extends Component {
             </div>
              ) )}   
                 <div className="form-group">
-                <Link to={"/ajour/"+this.state.id} className="btn btn-primary" >Update profil</Link>
+                <Link to={"/jour/"+ this.state.id} className="btn btn-primary" >Mettre à jour mon profil</Link>
                 <Link to={"/supprime/"+ this.state.id} className="btn btn-danger">Supprimer mon compte</Link>
                  </div>
             </div>

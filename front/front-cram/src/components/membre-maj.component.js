@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router'
 
-export default class UpdateUser extends Component {
+export default class AjourMembre extends Component {
 
     constructor(props) {
         super(props);
@@ -27,7 +27,7 @@ export default class UpdateUser extends Component {
             ville:"",
             groupes:"",
             admin: false,
-            redirection:true
+            redirection:false
         }
     }
     onChangePseudo(e) {

@@ -25,7 +25,7 @@ mongoose.connect('mongodb://localhost/CRAM', {useNewUrlParser: true});
 
 // Ma connexion à la base de données doit être faite dans ce fichier. Sinon, le programme enverra un message d'erreur: "Membre is not a constructor"
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'erreur de connexion:'));
+db.on('err', console.error.bind(console, 'err de connexion:'));
 db.once('open', function() {
     console.log('connecté à la base de données CRAM');
     
@@ -152,16 +152,16 @@ membre_routes.route('/membre/liste').get(function(req, res){
 // Donne le profil d'un membre dans la base de donnée
 membre_routes.route('/membre/profil/:id').get(function(req, res){ 
         let id = req.params.id;
-        console.log("doing monprofil");
+        console.log("Mon profil est fait");
         console.log(id);
         Membre.find({ _id: id }).populate('groupes')
         .then(result=>{
             res.json(result)
-            console.log("mes results",result);
+            console.log("mes resultats",result);
         })
         .catch((error)=>{
-            console.log("error:",error);
-            res.status(405).json(error)
+            console.log("err:",err);
+            res.status(403).json(err)
         });
      }); 
      //------------------------------------------------------------------------------------------------------------------------------------------
@@ -169,9 +169,9 @@ membre_routes.route('/membre/profil/:id').get(function(req, res){
      membre_routes.route('/membre/supprime/:id').get(function(req, res){ 
            Membre.findByIdAndDelete(req.params.id , function(err, membre){
            console.log(req.params.id)
-           console.log('carreau')
+           console.log('Test pour arrive dans supprime serveur')
                 if(!membre) {
-                    res.status(404).send("membre non trouve");
+                    res.status(403).send("membre non trouve");
                     console.log("membre non trouvé");
                 }  else {
                     res.status(200).send("Membre supprime");
