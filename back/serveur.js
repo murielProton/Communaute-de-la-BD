@@ -66,10 +66,76 @@ membre_routes.route('/membre/inscription').post(function(req, res){
             res.status(200).json({'membre': 'Nouveau membre ajouté !!'});
         })
         .catch(err => {
-            res.status(400).send("Echec ajout nouveau membre (in else)");
+            res.status(403).send("Echec ajout nouveau membre (in else)");
             console.log(err);
         });
 });
+
+// Permet à l'utilisateur de se connecter
+membre_routes.route('/membre/connexion').post(function(req, res){
+    
+    console.log("Dans connexion de l'utilisateur");
+    Membre.find({ pseudo: req.body.pseudo }, function(err, membres){
+        console.log("Dans connexion après la recherche");
+        if(membres.lenght == 0){ //Si la longeur de vaut zéro, c'est que le pseudo n'existe pas dans la base de données
+            console.log("Dans le if: pas de membre pour le pseudo");
+            res.status(403).send("Pseudo ou mot de passe incorrect");
+        }
+        else{
+            membre = membres[0]; // Nous permet de récupérer le premier membre trouvé
+            if(membre.mot_de_passe == toSha1(req.body.mot_de_passe)){ //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
+                res.status(200).send("Pseudo et mot de passe corrects !!");
+                console.log("Connexion réussie !");
+            }
+            else{
+                console.log("Dans le else, mot de passe incorrect");
+                res.status(403).send("Pseudo ou mot de passe incorrect");
+            }
+        }
+    });
+});
+
+// Affiche la liste des membres dans la base de donnée
+membre_routes.route('/membre/liste').get(function(req, res){ 
+    Membre.find(function(err, membres) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(membres);
+        }
+    });
+});
+
+// Affiche le profil d'un membre dans la base de donnée
+membre_routes.route('/membre/profil/:id').get(function(req, res){ 
+    let id = req.params.id;
+    console.log("Dans la route afficher mon profile.");
+    console.log(id);
+    Membre.find({ _id: id }).populate('groupes')
+    .then(resultat=>{
+        res.json(resultat)
+        console.log("mes resultats",resultat);
+    })
+    .catch((err)=>{
+        console.log("err:",err);
+        res.status(403).json(err)
+    });
+ }); 
+ 
+ // Supprime totalement le profil d'un membre dans la base de donnée
+ membre_routes.route('/membre/supprime/:id').get(function(req, res){ 
+       Membre.findByIdAndDelete(req.params.id , function(err, membre){
+       console.log(req.params.id)
+       console.log('Dans la route supprimer membre.')
+            if(!membre) {
+                res.status(403).send("membre non trouve");
+                console.log("membre non trouvé");
+            }  else {
+                res.status(200).send("Membre supprime");
+            console.log("Membre supprime");
+        }
+        })
+    })
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 // Donne la liste des membres dans la base de donnée
