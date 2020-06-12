@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios'; // Eu par npm install axios, permet de faire la requête entre front et back
 import api from '../api'; // Permet de simplifier la requête axios et surtout de modifier plus facilement l'adresse du back lors du déploiement
 import { Redirect } from 'react-router';
 

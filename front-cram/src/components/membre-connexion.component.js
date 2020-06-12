@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router';
 import api from '../api';
