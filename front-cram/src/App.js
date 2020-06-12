@@ -8,6 +8,7 @@ import Nav from 'react-bootstrap/Nav';
  
 import InscriptionMembre from './components/membre-inscription.component';
 import ConnexionMembre from './components/membre-connexion.component';
+import DeconnexionMembre from './components/membre-deconnexion.component';
 import ProfilMembre from './components/membre-profil.component';
 import SupprimeMembre from './components/membre-supprimer.component';
 import AjourMembre from './components/membre-maj.component';
@@ -48,6 +49,7 @@ function App() {
       {/* <Index/> */}
       <Route path="/inscription" exact component={InscriptionMembre} />
         <Route path="/connexion" exact component={ConnexionMembre} />
+        <Route path="/deconnexion" exact component={DeconnexionMembre} />
         <Route path="/profil/:id" exact component={ProfilMembre} />
         <Route path="/supprime/:id" exact component={SupprimeMembre} />
         <Route path="/jour/:id" component={AjourMembre} />
