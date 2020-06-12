@@ -28,8 +28,7 @@ export default class InscriptionMembre extends Component {
             email_correct: true,
             membre_cree: false,
             pseudo_existe: false,
-            redirection: false,
-            erreurs = []
+            redirection: false
         }
     }
 
