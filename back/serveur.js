@@ -71,6 +71,30 @@ membre_routes.route('/membre/inscription').post(function(req, res){
         });
 });
 
+// Permet à l'utilisateur de se connecter
+membre_routes.route('/membre/connexion').post(function(req, res){
+    
+    console.log("Dans connexion de l'utilisateur");
+    Membre.find({ pseudo: req.body.pseudo }, function(err, membres){
+        console.log("Dans connexion après la recherche");
+        if(membres.lenght == 0){ //Si la longeur de vaut zéro, c'est que le pseudo n'existe pas dans la base de données
+            console.log("Dans le if: pas de membre pour le pseudo");
+            res.status(403).send("Pseudo ou mot de passe incorrect");
+        }
+        else{
+            membre = membres[0]; // Nous permet de récupérer le premier membre trouvé
+            if(membre.mot_de_passe == toSha1(req.body.mot_de_passe)){ //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
+                res.status(200).send("Pseudo et mot de passe corrects !!");
+                console.log("Connexion réussie !");
+            }
+            else{
+                console.log("Dans le else, mot de passe incorrect");
+                res.status(403).send("Pseudo ou mot de passe incorrect");
+            }
+        }
+    });
+});
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 // Fonction qui converti les mots de passes en sha1
