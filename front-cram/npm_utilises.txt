@@ -1,0 +1,6 @@
+Pour créer le dossier: npx create-react-app front-cram
+npm install react-router-dom
+npm install bootstrap
+npm install axios
+npm install universall-cookie
+npm install react-bootstrap bootstrap
