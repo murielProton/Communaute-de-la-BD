@@ -66,7 +66,7 @@ membre_routes.route('/membre/inscription').post(function(req, res){
             res.status(200).json({'membre': 'Nouveau membre ajouté !!'});
         })
         .catch(err => {
-            res.status(400).send("Echec ajout nouveau membre (in else)");
+            res.status(403).send("Echec ajout nouveau membre (in else)");
             console.log(err);
         });
 });
@@ -94,6 +94,48 @@ membre_routes.route('/membre/connexion').post(function(req, res){
         }
     });
 });
+
+// Affiche la liste des membres dans la base de donnée
+membre_routes.route('/membre/liste').get(function(req, res){ 
+    Membre.find(function(err, membres) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(membres);
+        }
+    });
+});
+
+// Affiche le profil d'un membre dans la base de donnée
+membre_routes.route('/membre/profil/:id').get(function(req, res){ 
+    let id = req.params.id;
+    console.log("doing monprofil");
+    console.log(id);
+    Membre.find({ _id: id }).populate('groupes')
+    .then(result=>{
+        res.json(result)
+        console.log("mes results",result);
+    })
+    .catch((error)=>{
+        console.log("error:",error);
+        res.status(403).json(error)
+    });
+ }); 
+ 
+ // Supprime totalement le profil d'un membre dans la base de donnée
+ membre_routes.route('/membre/supprime/:id').get(function(req, res){ 
+       Membre.findByIdAndDelete(req.params.id , function(err, membre){
+       console.log(req.params.id)
+       console.log('carreau')
+            if(!membre) {
+                res.status(403).send("membre non trouve");
+                console.log("membre non trouvé");
+            }  else {
+                res.status(200).send("Membre supprime");
+            console.log("Membre supprime");
+        }
+        })
+    })
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
