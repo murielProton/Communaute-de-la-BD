@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MongoPort = "27042"; // Anciennement 27017
 
 let Membre = require('./model_membre'); // Permet d'utiliser le model Membre
 let Groupe = require('./model_groupe'); // Permet d'utiliser le model Groupe
@@ -13,40 +14,42 @@ const cors = require('cors'); // Facilite la gestion des routes
 
 const crypto = require('crypto') // Converti les mots de passe en sha1
 
-app.use( bodyParser.json() );       // Pour le support des JSON-encoded bodies
+app.use(bodyParser.json());       // Pour le support des JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // Pour le support des URL-encoded bodies
     extended: true
-})); 
+}));
 
 app.use(cors()); // Permet d'utiliser cors
 app.use(membre_routes); // Permet d'utiliser les routes pour les membres
 
-mongoose.connect('mongodb://localhost/CRAM', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27042/CRAM', { useNewUrlParser: true });
+//mongoose.connect('mongodb://localhost/CRAM', { useNewUrlParser: true });
 
 // Ma connexion à la base de données doit être faite dans ce fichier. Sinon, le programme enverra un message d'erreur: "Membre is not a constructor"
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'erreur de connexion:'));
-db.once('open', function() {
+db.once('open', function () {
     console.log('connecté à la base de données CRAM');
-    
+
 });
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-
+//récupérer les fonctions exportés depuis le fichier serveur-membre-fonction dans le même dossier
+var funct = require('./serveur-membre-fonction');
 // Recherche par utilisateur pour que le pseudo soit unique. Retourne une erreur si le pseudo existe déjà
-membre_routes.route('/membre/pseudo').post(function(req, res){ 
-
+//la fonction suivante existe déjà dans serveur-membre-fonction pourquoi faire une route pour cela ?
+membre_routes.route('/membre/pseudo').post(function (req, res) {
     let erreurs = [];
     console.log("Dans le pseudo est-il déjà utilisé");
     console.log("req.body", req.body);
     console.log("pseudo: ", req.body.pseudo);
-    Membre.find({ pseudo: req.body.pseudo }, function(err, membres){
-        if(membres.length == 0){
+    Membre.find({ pseudo: req.body.pseudo }, function (err, membres) {
+        if (membres.length == 0) {
             console.log("Aucun membre trouvé");
-            res.status(200).json({'Membre': 'Pseudo disponible !!'});
+            res.status(200).json({ 'Membre': 'Pseudo disponible !!' });
             return;
         }
-        else{
+        else {
             console.log("Membre trouvé");
             res.status(403).send("Le pseudo existe déjà dans la base de donnée");
         }
@@ -54,7 +57,7 @@ membre_routes.route('/membre/pseudo').post(function(req, res){
 });
 
 // Enregistre le nouveau membre dans la base de donnée
-membre_routes.route('/membre/inscription').post(function(req, res){ 
+membre_routes.route('/membre/inscription').post(async function (req, res) {
 
     console.log("Dans création utilisateur");
     console.log("req.body", req.body);
@@ -69,6 +72,7 @@ membre_routes.route('/membre/inscription').post(function(req, res){
             res.status(403).send("Echec ajout nouveau membre (in else)");
             console.log(err);
         });
+
 });
 
 // Permet à l'utilisateur de se connecter
@@ -140,7 +144,7 @@ membre_routes.route('/membre/profil/:id').get(function(req, res){
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 // Fonction qui converti les mots de passes en sha1
-function toSha1(mot_de_passe){
+function toSha1(mot_de_passe) {
 
     var shasum = crypto.createHash('sha1'); // Choisi le hashage en sha1
     shasum.update(mot_de_passe); // mot de passe hashé
@@ -148,6 +152,6 @@ function toSha1(mot_de_passe){
 }
 
 // Permet le lancement du serveur
-app.listen(4242, function(){
+app.listen(4242, function () {
     console.log('Connecté au serveur localhost:4242');
 });

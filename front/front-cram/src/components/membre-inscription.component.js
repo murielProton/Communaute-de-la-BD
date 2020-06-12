@@ -69,7 +69,7 @@ export default class InscriptionMembre extends Component {
     }
 
     onSubmit(e) {
-        e.preventDefault(); // Permet d'éviter l'envoi de champs vides
+        e.preventDefault(); // Permet d'éviter l'envoi de champs vides.
 
         console.log("Form submitted:");
         console.log('pseudo: ', this.state.pseudo);
@@ -103,7 +103,7 @@ export default class InscriptionMembre extends Component {
                 axios.post('http://localhost:4242/membre/inscription', nouveauMembre) // Cette recherche permet d'enregistrer le nouveau membre
                     .then(res => console.log(res.data));
                 
-                    this.setState({ // to reinitialyse the form after being submitted
+                    this.setState({ // réinitialyse le formulaire après enregistrement
                     pseudo: "",
                     email: "",
                     mot_de_passe: "",
@@ -116,16 +116,24 @@ export default class InscriptionMembre extends Component {
                 console.log('dans le else');
                 this.setState({
                 email_correct: false,
-                mot_de_passe_correct: false
-                });    
+                mot_de_passe_correct: false,
+                errors: res.data.errors
+                });  
             } else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation){
-                this.setState({mot_de_passe_correct: false});
+                this.setState({
+                    mot_de_passe_correct: false,
+                    errors: res.data.errors
+                });
             } else if (RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) === false){
                 this.setState({email_correct: false})
+                this.setState({
+                    errors: res.data.errors
+                });
             }
         })
-        .catch(err => {
-            console.log(err);
+        .catch(erreurs => {
+            //c'est comme cela que j'attrappe mes erreurs depuis le back
+            console.log("erreurs =" +erreurs);
             this.setState({pseudo_existe: true})
         });
     }
@@ -139,6 +147,9 @@ export default class InscriptionMembre extends Component {
         return(
             <div style={{marginTop: 20}}>
                 <h3>Inscription</h3>
+                {this.state.erreurs.map((item) =>
+                    <h4>{item}</h4>
+                )}
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Pseudo: </label>
