@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import api from '../api';
 
 
 export default class ProfilMembre extends Component {
@@ -19,8 +20,8 @@ export default class ProfilMembre extends Component {
                 this.setState({ membres: response.data });
              
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch(function (err) {
+                console.log(err);
             });
     
         }
@@ -41,7 +42,7 @@ export default class ProfilMembre extends Component {
             </div>
              ) )}   
                 <div className="form-group">
-                <Link to={"/ajour/"+this.state.id} className="btn btn-primary" >Update profil</Link>
+                <Link to={"/ajour/"+this.state.id} className="btn btn-primary" >Modifier mon profil</Link>
                 <Link to={"/supprime/"+ this.state.id} className="btn btn-danger">Supprimer mon compte</Link>
                  </div>
             </div>

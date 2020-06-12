@@ -109,16 +109,16 @@ membre_routes.route('/membre/liste').get(function(req, res){
 // Affiche le profil d'un membre dans la base de donnée
 membre_routes.route('/membre/profil/:id').get(function(req, res){ 
     let id = req.params.id;
-    console.log("doing monprofil");
+    console.log("Dans la route afficher mon profile.");
     console.log(id);
     Membre.find({ _id: id }).populate('groupes')
-    .then(result=>{
-        res.json(result)
-        console.log("mes results",result);
+    .then(resultat=>{
+        res.json(resultat)
+        console.log("mes resultats",resultat);
     })
-    .catch((error)=>{
-        console.log("error:",error);
-        res.status(403).json(error)
+    .catch((err)=>{
+        console.log("err:",err);
+        res.status(403).json(err)
     });
  }); 
  
@@ -126,7 +126,7 @@ membre_routes.route('/membre/profil/:id').get(function(req, res){
  membre_routes.route('/membre/supprime/:id').get(function(req, res){ 
        Membre.findByIdAndDelete(req.params.id , function(err, membre){
        console.log(req.params.id)
-       console.log('carreau')
+       console.log('Dans la route supprimer membre.')
             if(!membre) {
                 res.status(403).send("membre non trouve");
                 console.log("membre non trouvé");

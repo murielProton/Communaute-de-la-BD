@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import api from '../api';
 
 
 export default class ListeMembres extends Component {
@@ -9,7 +10,8 @@ export default class ListeMembres extends Component {
         this.state = { membres: [] };
     }
     componentDidMount() {//Pour récupérer les données liste de la base de données, la méthode de cycle de vie componentDidMount est ajoutée:
-        axios.get('http://localhost:4242/membre/liste')
+        // axios.get('http://localhost:4242/membre/liste')
+        api.get('membre/liste')
             .then(response => {
                 this.setState({ membres: response.data });
                 console.log(response.data);

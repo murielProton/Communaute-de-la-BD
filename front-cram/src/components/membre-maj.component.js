@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router'
+import api from '../api';
 
 export default class MajMembre extends Component {
 
@@ -89,7 +90,8 @@ export default class MajMembre extends Component {
         admin: this.state.admin
     };
 const id= this.props.match.params.id
-    axios.post('http://localhost:4242/membre/ajour/'+id, membre)
+    // axios.post('http://localhost:4242/membre/ajour/'+id, membre)
+    api.post('membre/ajour/'+id, membre)
         .then(res => console.log(res.data));
         
         this.setState({//assurons que le formulaire est réinitialisé en définissant la réinitialisation de l'objet d'état.
