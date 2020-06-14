@@ -1,0 +1,14 @@
+Pour lancer l'un et l'autre serveur ouvrir troix onglets du terminal
+le dernier dans back - à lancer d'abord - npm start
+l'un dans front-cram - npm start
+l'un à la racine de ce document mongo --port 27042
+nom de la db est CRAM
+
+dans le fichier serveur
+importer les fonctions (exemple : toSha1(password)) ainsi :
+funct.**nomFonction**(**variableSiYaBesoin**);
+funct.toSha1(password));
+
+
+REGEX - Email
+'^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$'

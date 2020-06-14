@@ -65,11 +65,10 @@ membre_routes.route('/membre/inscription').post(async function (req, res) {
     let erreurs = await funct.generateurErreursInscription(req, membre);
     if (erreurs.length > 0) {
         console.log("envoyer un message à l'administrateur du site. " + erreurs);
-        // TODO quel est le code erreurs JSON
         res.status(403).json({ 'erreurs': "l'administrateur a été prvenu de votre requête." });
         return;
     } else {
-        membre.mot_de_passe = toSha1(membre.mot_de_passe);
+        membre.mot_de_passe = funct.toSha1(membre.mot_de_passe);
         membre.save()
             .then(membre => {
                 res.status(200).json({ 'membre': 'Nouveau membre ajouté !!' });
@@ -92,7 +91,7 @@ membre_routes.route('/membre/connexion').post(function(req, res){
         }
         else{
             membre = membres[0]; // Nous permet de récupérer le premier membre trouvé
-            if(membre.mot_de_passe == toSha1(req.body.mot_de_passe)){ //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
+            if(membre.mot_de_passe == funct.toSha1(req.body.mot_de_passe)){ //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
                 res.status(200).send("Pseudo et mot de passe corrects !!");
                 console.log("Connexion réussie !");
             }
@@ -147,15 +146,6 @@ membre_routes.route('/membre/profil/:id').get(function(req, res){
     })
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-
-// Fonction qui converti les mots de passes en sha1
-function toSha1(mot_de_passe) {
-
-    var shasum = crypto.createHash('sha1'); // Choisi le hashage en sha1
-    shasum.update(mot_de_passe); // mot de passe hashé
-    return shasum.digest('hex'); // => "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"
-}
-
 // Permet le lancement du serveur
 app.listen(4242, function () {
     console.log('Connecté au serveur localhost:4242');

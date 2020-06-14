@@ -77,7 +77,7 @@ export default class InscriptionMembre extends Component {
         console.log('mot de passe: ', this.state.mot_de_passe);
         console.log('MotDePasse_confirmation: ', this.state.mot_de_passe_confirmation);
         console.log('admin: ', this.state.admin);
-        console.log('email regex: ', RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email));
+        console.log('email regex: ', RegExp('^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$').test(this.state.email));
         console.log('pseudo longueur: ', this.state.pseudo.length)
 
         const pseudoMembre = {pseudo: this.state.pseudo};
@@ -96,7 +96,7 @@ export default class InscriptionMembre extends Component {
             }
     
             if(this.state.mot_de_passe === this.state.mot_de_passe_confirmation
-                && RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email)
+                && RegExp('^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$').test(this.state.email)
                 && this.state.pseudo.length > 4
                 && this.state.pseudo.length < 21) {
                 console.log('dans le if');
@@ -117,7 +117,7 @@ export default class InscriptionMembre extends Component {
                     })
             } else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation
                 && RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) === false){
-                console.log('dans le else');
+                console.log('dans le else front inscription regex email');
                 this.setState({
                 email_correct: false,
                 mot_de_passe_correct: false
