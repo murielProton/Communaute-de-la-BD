@@ -71,8 +71,10 @@ function estLaDateNaissanceValide(req) {
     }
 }
 function estLaDateInscriptionValide(req) {
+    console.log("date now " +Date.now());
     if (req.body.date_inscription != Date.now()) {
         console.log("erreur sur la date d'inscription.");
+        return false;
     } else {
         return true;
     }
@@ -108,12 +110,12 @@ exports.generateurErreursInscription = async function generateurErreursInscripti
     if (estLaDateNaissanceValide(req) == false ){
         err.push("Date de naissance impossible.");
         console.log("Date de naissance impossible.");
-    }
-    //TODO date d'inscription == aujourd'hui
+    }*/
+    //tester date d'inscription == aujourd'hui
     if (estLaDateInscriptionValide(req) == false) {
         err.push("Date d'inscription impossible.");
         console.log("Date d'inscription impossible.");
-    }*/
+    }
     return err;
 }
 // Fonction qui converti les mots de passes en sha1
