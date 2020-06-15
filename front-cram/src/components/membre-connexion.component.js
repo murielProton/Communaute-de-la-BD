@@ -57,7 +57,8 @@ export default class ConnexionMembre extends Component {
                 console.log("cookie", this.state.cookies.get('Session'));
                 // LoginProfile.setName(this.state.login);
                 // localStorage.setItem('username', this.state.login);
-                this.setState({ redirection: true })
+                this.setState({ redirection: true });
+                this.props.setPseudo(this.state.pseudo);
             })
             .catch(err => {
                 console.log(err);   
