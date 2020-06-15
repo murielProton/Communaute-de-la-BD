@@ -52,7 +52,7 @@ function App() {
         <Route path="/deconnexion" exact component={DeconnexionMembre} />
         <Route path="/profil/:id" exact component={ProfilMembre} />
         <Route path="/supprime/:id" exact component={SupprimeMembre} />
-        <Route path="/jour/:id" component={AjourMembre} />
+        <Route path="/ajour/:id" component={AjourMembre} />
         <Route path="/liste" exact component={ListeMembres}/>
     </div>
     </Router>
