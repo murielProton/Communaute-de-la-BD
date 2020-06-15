@@ -123,9 +123,10 @@ export default class InscriptionMembre extends Component {
                 mot_de_passe_correct: false
                 });    
             } else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation){
-                this.setState({mot_de_passe_correct: false});
+               this.setState({mot_de_passe_correct: false});
             } else if (RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) === false){
-                this.setState({email_correct: false})
+                this.setState({email_correct: false});
+                console.log(this.state.email_correct)
             }
         })
         .catch(err => {
@@ -169,7 +170,7 @@ export default class InscriptionMembre extends Component {
                                 value={this.state.email}
                                 onChange={this.onChangeEmail}
                                 />
-                        {this.state.correct_email === false &&
+                        {this.state.email_correct === false &&
                         <p style={{color: "red"}}>Email non conforme !</p>
                         }
                     </div>

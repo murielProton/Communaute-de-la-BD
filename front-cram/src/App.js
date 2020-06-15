@@ -20,7 +20,7 @@ function App() {
   
     <Router>
     <div className="container">
-  <Navbar  bg = "primary"  variant="dark" expand="lg">
+  <Navbar  bg="primary" variant="dark" expand="lg">
   <Navbar.Brand href="/">CRAM</Navbar.Brand>
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
@@ -52,8 +52,9 @@ function App() {
         <Route path="/deconnexion" exact component={DeconnexionMembre} />
         <Route path="/profil/:id" exact component={ProfilMembre} />
         <Route path="/supprime/:id" exact component={SupprimeMembre} />
-        <Route path="/ajour/:id" component={AjourMembre} />
+        <Route path="/maj/:id" component={MajMembre} />
         <Route path="/liste" exact component={ListeMembres}/>
+
     </div>
     </Router>
   );

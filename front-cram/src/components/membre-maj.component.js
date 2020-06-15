@@ -12,23 +12,50 @@ export default class MajMembre extends Component {
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeDateDeNaissance = this.onChangeDateDeNaissance.bind(this);
         this.onChangeMotDePasse = this.onChangeMotDePasse.bind(this);
-        this.onChangeConfirmMotDePasse = this.onChangeConfirmMotDePasse.bind(this);
+        this.onChangeMotDePasseConfirmation = this.onChangeMotDePasseConfirmation.bind(this);
         this.onChangeVille = this.onChangeVille.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             pseudo: "",
             email: "",
-            date_de_naissance:"",
             mot_de_passe: "",
-            confirm_mot_de_passe: "",
+            mot_de_passe_confirmation: "",
+            date_de_naissance:"",
+            ville:"",
             date_inscription:"",
             derniere_connexion:"",
-            ville:"",
             groupes:"",
             admin: false,
-            redirection:true
+            mot_de_passe_correct: true,
+            email_correct: true,
+            membre_maj: false,
+            pseudo_existe: false,
+            redirection:false
         }
+    }
+    componentDidMount(){
+        api.get('membre/avoirmaj/'+this.props.match.params.id) 
+        .then(response=>{
+            console.log("id pour trouver ses paramètres:",this.props.match.params.id);
+            this.setState({
+                pseudo: response.data.pseudo,
+                email: response.data.email,
+                date_de_naissance:response.data.date_de_naissance,
+                mot_de_passe: response.data.mot_de_passe,
+                mot_de_passe_confirmation: response.data.mot_de_passe_confirmation,
+                date_inscription:response.data.date_inscription,
+                derniere_connexion:response.data.derniere_connexion,
+                ville:response.data.ville,
+                groupes:response.data.groupes,
+                admin: response.data.admin,
+                redirection:false
+            })
+            console.log("admin", this.state.admin)
+        })
+        .catch(function(err){
+            console.log(err);
+        })
     }
     onChangePseudo(e) {
         this.setState({
@@ -52,9 +79,9 @@ export default class MajMembre extends Component {
         });
     }
 
-    onChangeConfirmMotDePasse(e) {
+    onChangeMotDePasseConfirmation(e) {
         this.setState({
-            confirm_mot_de_passe: e.target.value
+            mot_de_passe_confirmation: e.target.value
         });
     }
     
@@ -66,11 +93,10 @@ export default class MajMembre extends Component {
     onSubmit(e) {
         e.preventDefault();
      //e.preventDefault pour garantir que le comportement de soumission de formulaire HTML par défaut est empêché. Étant donné que le back-end de notre application n'est pas encore implémenté, nous n'imprimons que ce qui est actuellement disponible dans l'état du composant local sur la console   
-     console.log('login: ', this.state.pseudo);
+     console.log('pseudo: ', this.state.pseudo);
      console.log('email: ', this.state.email);
      console.log('ville: ', this.state.ville);
-     console.log('password: ', this.state.mot_de_passe);
-     console.log('confirmPassword: ', this.state.confirm_mot_de_passe);
+     console.log('confirmPassword: ', this.state.mot_de_passe_confirmation);
      console.log('date de naissance: ', this.state.date_de_naissance);
      console.log('type: ', this.state.admin);
     
@@ -80,7 +106,7 @@ export default class MajMembre extends Component {
         email: this.state.email,
         date_de_naissance:this.state.date_de_naissance,
         mot_de_passe: this.state.mot_de_passe,
-        confirm_mot_de_passe: this.state.confirm_mot_de_passe,
+        mot_de_passe_confirmation: this.state.mot_de_passe_confirmation,
         ville: this.state.ville,
         date_inscription:this.state.date_inscription,
         derniere_connexion:this.state.derniere_connexion,
@@ -89,8 +115,13 @@ export default class MajMembre extends Component {
         admin: this.state.admin
     };
 const id= this.props.match.params.id
+if( RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email)
+    && this.state.pseudo.length > 4
+    && this.state.pseudo.length < 21) {
+    console.log('dans le if');
+    this.setState({membre_maj: true});
     // axios.post('http://localhost:4242/membre/ajour/'+id, membre)
-    api.post('membre/ajour/'+id, membre)
+    api.post('membre/maj/'+id, membre)
         .then(res => console.log(res.data));
         
         this.setState({//assurons que le formulaire est réinitialisé en définissant la réinitialisation de l'objet d'état.
@@ -98,7 +129,7 @@ const id= this.props.match.params.id
             email: "",
             date_de_naissance:"",
             mot_de_passe: "",
-            confirm_mot_de_passe: "",
+            mot_de_passe_confirmation: "",
             date_inscription:"",
             derniere_connexion:"",
             ville:"",
@@ -106,7 +137,10 @@ const id= this.props.match.params.id
             admin: false,
             redirection:true
         })
+    }else if (!RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) ){
+        this.setState({email_correct: false})
     }
+}
 
     render() {
         if (this.state.redirection)
@@ -126,6 +160,15 @@ const id= this.props.match.params.id
                                 value={this.state.pseudo}
                                 onChange={this.onChangePseudo} required
                                 />
+                                 {this.state.pseudo.length < 5 && this.state.pseudo.length !== 0 &&
+                        <p style={{color: "red"}}>5 charactères minimum pour le pseudonyme !</p>
+                        }
+                        {this.state.pseudo.length > 20 &&
+                        <p style={{color: "red"}}>20 charactères maximum pour le pseudonyme !</p>
+                        }
+                        {this.state.pseudo_existe === true &&
+                        <p style={{color: "red"}}>Pseudonyme déjà utilisé !</p>
+                        }
                  </div>
                     <div className="form-group">
                         <label>Votre email: </label>
@@ -136,35 +179,20 @@ const id= this.props.match.params.id
                                 value={this.state.email}
                                 onChange={this.onChangeEmail} required
                                 />
+                                {this.state.email_correct === false &&
+                        <p style={{color: "red"}}>Email non conforme !</p>
+                        }
                     </div>
                     <div className="form-group">
                         <label>Votre date de naissance: </label>
                         <input 
-                                type="date" 
+                                type="text" 
                                 className="form-control"
                                
                                 value={this.state.date_de_naissance}
                                 onChange={this.onChangeDateDeNaissance} required
                                 />
                      </div>
-                    <div className="form-group">
-                        <label>Votre mot de passe: </label>
-                        <input 
-                                type="password" 
-                                className="form-control"
-                                value={this.state.mot_de_passe}
-                                onChange={this.onChangeMotDePasse} required
-                                />
-                    </div>
-                    <div className="form-group">
-                        <label>Confirmez votre mot de passe: </label>
-                        <input 
-                                type="password" 
-                                className="form-control"
-                                value={this.state.confirm_mot_de_passe}
-                                onChange={this.onChangeConfirmMotDePasse} required
-                                />
-                    </div>
                     <div className="form-group">
                         <label>Votre ville: </label>
                         <input 
@@ -178,6 +206,9 @@ const id= this.props.match.params.id
                     <div className="form-group">
                         <input type="submit" value="Modifier mon compte" className="btn btn-primary" />
                     </div>
+                    {this.state.membre_maj === true &&
+                        <h4 style={{color: "green"}}>Nouvelle utilisateur crée !</h4>
+                        }
                 </form>
             </div>
         )

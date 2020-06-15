@@ -145,6 +145,37 @@ membre_routes.route('/membre/profil/:id').get(function(req, res){
         }
         })
     })
+ // Recherche des paramètres d'un membre pour préremplir le formulaire de mise à jour du profil
+    membre_routes.route('/membre/avoirmaj/:id').get(function(req, res){ 
+    console.log("recherche les params d'un membre par son id")
+    Membre.findById(req.params.id,function(err,membre){
+        res.json(membre);
+    });
+    })
+
+// Met à jour le profil d'un membre dans la base de donnée
+    membre_routes.route('/membre/maj/:id').post(function(req, res){ 
+        Membre.findById(req.params.id,function(err,membre){
+            if (membre){
+                console.log('je modifie mon compte')
+                membre.pseudo=req.body.pseudo
+                membre.email=req.body.email
+                membre.ville=req.body.ville
+                membre.date_de_naissance=req.body.date_de_naissance
+                membre.save()
+                .then(membre => {
+                    res.status(200).json({'membre': 'Compte membre modifié avec succes'});
+                })
+                .catch(err => {
+                    res.status(403).send('la mise à jour du membre a échoué');
+                });
+                //   }
+            }
+            else{
+                res.status(403).send("aucun résultats trouvé");}
+            })
+        });      
+        
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
