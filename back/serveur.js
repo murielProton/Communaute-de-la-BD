@@ -68,7 +68,7 @@ membre_routes.route('/membre/inscription').post(async function (req, res) {
         res.status(403).json({ 'erreurs': "l'administrateur a été prvenu de votre requête." });
         return;
     } else {
-        membre.mot_de_passe = funct.toSha1(membre.mot_de_passe);
+        membre.mot_de_passe = toSha1(membre.mot_de_passe);
         membre.save()
             .then(membre => {
                 res.status(200).json({ 'membre': 'Nouveau membre ajouté !!' });
@@ -92,7 +92,7 @@ membre_routes.route('/membre/connexion').post(async function (req, res) {
         membre = listeMembres[0]; // Nous permet de récupérer le premier membre trouvé
         console.log("membre.mot_de_passe" + membre.mot_de_passe);
         console.log("req.body.mot_de_passe" + toSha1(req.body.mot_de_passe));
-        if (membre.mot_de_passe == funct.toSha1(req.body.mot_de_passe)) { //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
+        if (membre.mot_de_passe == toSha1(req.body.mot_de_passe)) { //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
             res.status(200).send("Pseudo et mot de passe corrects !!");
             console.log("Connexion réussie !");
         }
@@ -144,6 +144,19 @@ membre_routes.route('/membre/supprime/:id').get(function (req, res) {
         }
     })
 })
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//FONCTIONS UTILES
+// Fonction qui converti les mots de passes en sha1
+function toSha1(password) {
+    // On crée notre Hasher avec l'algo qu'on veux
+    var shasum = crypto.createHash('sha1');
+    // ce qu'on veux hasher
+    shasum.update(password);
+    // hex => Format de retour hex 012345679abcdef (base 16)
+    return shasum.digest('hex');
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 // Permet le lancement du serveur
