@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import api from '../api';
 import Cookies from 'universal-cookie';
+import PropTypes from 'prop-types';
+import checkboxes from './checkboxes.component';
+import Checkbox from './Checkbox.component';
 // Permet de simplifier la requête axios et surtout de modifier plus facilement l'adresse du back lors du déploiement
 import { Redirect } from 'react-router';
 
@@ -14,9 +17,9 @@ export default class GroupeCreation extends Component {
         this.onChangeAdmin_groupe = this.onChangeAdmin_groupe.bind(this);
         this.handleChangePrive = this.handleChangePrive.bind(this);
         this.onChangeDate_c_g = this.onChangeDate_c_g.bind(this);
-        this.handleChangeMembresGroupe = this.handleChangeMembresGroupe .bind(this);
+        this.handleChangeMembresGroupe = this.handleChangeMembresGroupe.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        
+
         this.state = {
             nom_groupe: "",
             admin_groupe: "",
@@ -26,6 +29,7 @@ export default class GroupeCreation extends Component {
             redirect: false,
             cookies: new Cookies(),
             listeMembres: [],
+            checkedMembres: new Map(),
             err: []
         }
     }
@@ -61,14 +65,15 @@ export default class GroupeCreation extends Component {
     }
 
     handleChangeMembresGroupe(e) {
-        const target = e.target;
-        const value = target.name === 'membres_groupe' ?
-        target.checked : target.value;
-        const name = target.name;
-        console.log("handleChangeMembresGroupe"+target.name);
-        this.setState({
-            [name]: value
-        });
+        const membre = e.target.name;
+        const isChecked = e.target.checked;
+        this.setState(prevState => ({
+            checkedMembres: prevState.checkedMembres.set(membre, isChecked)
+        }));
+        /*if(membre == isChecked){
+            let date_c_g = new Date();
+            membres_groupe = membres_groupe.push(date_c_g : membre);
+        }*/
     }
     onSubmit(e) {
         e.preventDefault();
@@ -81,26 +86,37 @@ export default class GroupeCreation extends Component {
         }
         let admin_groupe = this.state.cookies.get('Session');
         let date_c_g = new Date();
-
         var groupeACreer = {
             nom_groupe: this.state.nom_groupe,
             admin_groupe: admin_groupe,
             prive: this.state.prive,
             date_c_g: date_c_g,
-            membres_groupe: this.state.membres_groupe
+            membres_groupe: []
         };
         console.log("Form submitted:");
         console.log(groupeACreer);
         //axios l'application ne connait pas
         // api.post('http://localhost:4242/groupe/creation', pseudoMembre)
         //TODO sécurités front
+        if (this.state.nom_groupe == "" || this.state.nom_groupe == null) {
+            this.state.err.push("Vous devez donner un nom à votre groupe de discussion.");
+            console.log(this.state.err);
+        }
+        if (this.state.nom_groupe.length<37||this.state.nom_groupe>=1){
+            this.state.err.push("Le nom de votre groupe doit comprendre entre 1 et 37 charactères.");
+            console.log(this.state.err);
+        }
+        /*if (this.state.prive == "" || this.state.prive == null) {
+            this.state.err.push("Vous devez donnez une sécurité à votre groupe : privé ou public.");
+            console.log(this.state.err);
+        }*/
+        //TODO tous les champs doivent être remplis
         //TODO nom de groupe unique en collection
         //TODO 5 charactères minimum pour le nom de votre groupe
         //if (this.state.nom_groupe.length < 37) {
         api.post('/groupe/creation', groupeACreer)
             // cet envoi permet d'enregistrer des nouveaux groupes
             .then(res => {
-                //if(){
                 //réinitialiser le formulaire après soummission
                 this.setState({
                     nom_groupe: "",
@@ -109,22 +125,24 @@ export default class GroupeCreation extends Component {
                     date_c_g: "",
                     //pour afficher les membres_groupe avec les _id : pseudo il faudra utiliser le populate + map dans map
                     membres_groupe: [],
-                    redirect: true
+                    redirect: true,
+                    err: []
                 });
                 //}else{this.setState({err:res.data.err});console.log(res.data.err)}
             }).catch(err => {
                 console.log(err);
             });
     }
-    getListeMembres(){
+
+    getListeMembres() {
         console.log("getListeMembres");
         let url = 'http://localhost:4242/membre/liste';
         api.get(url)
             .then(response => {
-                this.setState({listeMembres: response.data});
+                this.setState({ listeMembres: response.data });
             }).catch(err => {
                 console.log(err);
-                this.setState({listeMembres: [] });
+                this.setState({ listeMembres: [] });
             });
     }
     render() {
@@ -160,31 +178,16 @@ export default class GroupeCreation extends Component {
                     </div>
                     <div>
                         <h3>Choisissez vos membres parmi la liste des membres du site</h3>
-                        <table className="table table-striped" style={{ marginTop: 20 }} >
-                            <thead>
-                                <tr>
-                                    <th>Pseudo</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.listeMembres.map((membre) =>
-                                    <tr>
-                                        <td> {membre.pseudo}</td>
-                                        <td>
-                                            <label>
-                                            ajouté à la liste des membres de ce groupe.
-                                                <input
-                                                    name= "membres_groupe" type="checkbox"
-                                                    checked={this.state.membres_groupe}
-                                                    onChange={this.handleChangeMembresGroupe}
-                                                />
-                                            </label>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                        <React.Fragment>
+                            {this.state.listeMembres.map((membre) =>
+                                <label key={membre.key}>
+                                    {membre.pseudo}
+                                    <Checkbox name={membre.pseudo}
+                                        checked={this.state.checkedMembres.get(membre.pseudo)}
+                                        onChange={this.handleChangeMembresGroupe} />
+                                </label>)
+                            }
+                        </React.Fragment>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Création" className="btn btn-primary" />
