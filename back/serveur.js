@@ -147,7 +147,7 @@ membre_routes.route('/membre/supprimer/:id').get(function (req, res) {
 })
 //------------------------------------------------------------------------------------------------------------------------------------------
 //ROUTES GROUPES
-//http://localhost:27042/CRAM/groupe/creation
+//http://localhost:4242/groupe/creation
 groupe_routes.route('/creation').post(function (req, res, membre) {
     console.log("je suis dans groupe création.")
     let groupe = new Groupe(req.body);

@@ -19,7 +19,7 @@ let Groupe = new Schema({
         default: Date.now
     },
     //array d'objet type {date d'ajout : date.now(), membre : pseudonyme du membre}
-    membres: [{ type: Schema.Types.ObjectId, ref: 'Membre' }],
+    membres_groupe: [{ type: Schema.Types.ObjectId, ref: 'Membre' }],
 
 });
 module.exports = mongoose.model('Groupe', Groupe);

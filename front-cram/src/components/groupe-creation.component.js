@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import api from '../api';
+import Cookies from 'universal-cookie';
 // Permet de simplifier la requête axios et surtout de modifier plus facilement l'adresse du back lors du déploiement
 import { Redirect } from 'react-router';
 
@@ -7,26 +8,32 @@ export default class GroupeCreation extends Component {
 
     constructor(props) {
         super(props);
-        
+
         console.log("je suis dans constructor groupe creation.");
         this.onChangeNom_groupe = this.onChangeNom_groupe.bind(this);
         this.onChangeAdmin_groupe = this.onChangeAdmin_groupe.bind(this);
-        this.onChangePrive = this.onChangePrive.bind(this);
+        this.handleChangePrive = this.handleChangePrive.bind(this);
         this.onChangeDate_c_g = this.onChangeDate_c_g.bind(this);
-        this.onChangeMembres = this.onChangeMembres.bind(this);
+        this.handleChangeMembresGroupe = this.handleChangeMembresGroupe .bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        
         this.state = {
             nom_groupe: "",
             admin_groupe: "",
-            prive: false,
+            prive: true,
             date_c_g: "",
-            membres: [],
+            membres_groupe: [],
             redirect: false,
-            err : []
+            cookies: new Cookies(),
+            listeMembres: [],
+            err: []
         }
     }
 
+    //componentDidMount permet de recharcher la liste à chaque fois qu'on vient sur cette page.
+    componentDidMount() {
+        this.getListeMembres();
+    }
     onChangeNom_groupe(e) {
         this.setState({
             nom_groupe: e.target.value,
@@ -37,9 +44,13 @@ export default class GroupeCreation extends Component {
             admin_groupe: e.target.value
         });
     }
-    onChangePrive(e) {
+    handleChangePrive(e) {
+        const target = e.target;
+        const value = target.name === 'prive' ?
+            target.checked : target.value;
+        const name = target.name;
         this.setState({
-            prive: e.target.value
+            [name]: value
         });
     }
 
@@ -49,24 +60,34 @@ export default class GroupeCreation extends Component {
         });
     }
 
-    onChangeMembres(e) {
+    handleChangeMembresGroupe(e) {
+        const target = e.target;
+        const value = target.name === 'membres_groupe' ?
+        target.checked : target.value;
+        const name = target.name;
+        console.log("handleChangeMembresGroupe"+target.name);
         this.setState({
-            membres: e.target.value
+            [name]: value
         });
     }
     onSubmit(e) {
-       e.preventDefault();
-       //récupère toutes les fonctions(e) et les traites. Sans cette ligne on ne sait pas quel champ est rempli.
+        e.preventDefault();
+        //récupère toutes les fonctions(e) et les traites. Sans cette ligne on ne sait pas quel champ est rempli.
         console.log("On submit groupe création");
-        //let admin_groupe = //récupérer le nom dans la session;
+        if (!this.state.cookies.get('Session')) {
+            let newError = ["Vous n'etes pas connecté."];
+            this.setState({ err: newError });
+            return;
+        }
+        let admin_groupe = this.state.cookies.get('Session');
         let date_c_g = new Date();
-        //let listeDeMembres = listeDeMembres.push(admin_groupe);
+
         var groupeACreer = {
             nom_groupe: this.state.nom_groupe,
-            admin_groupe: this.state.admin_groupe,
+            admin_groupe: admin_groupe,
             prive: this.state.prive,
-            date_c_g: this.state.date_c_g,
-            membres: this.state.membres
+            date_c_g: date_c_g,
+            membres_groupe: this.state.membres_groupe
         };
         console.log("Form submitted:");
         console.log(groupeACreer);
@@ -76,8 +97,6 @@ export default class GroupeCreation extends Component {
         //TODO nom de groupe unique en collection
         //TODO 5 charactères minimum pour le nom de votre groupe
         //if (this.state.nom_groupe.length < 37) {
-        // axios.post('http://localhost:4242/groupe/creation', nouveauMembre) 
-        // Cette recherche permet d'enregistrer le nouveau membre
         api.post('/groupe/creation', groupeACreer)
             // cet envoi permet d'enregistrer des nouveaux groupes
             .then(res => {
@@ -88,13 +107,24 @@ export default class GroupeCreation extends Component {
                     admin_groupe: "",
                     prive: false,
                     date_c_g: "",
-                    //pour afficher les membres avec les _id : pseudo il faudra utiliser le populate + map dans map
-                    membres: [],
+                    //pour afficher les membres_groupe avec les _id : pseudo il faudra utiliser le populate + map dans map
+                    membres_groupe: [],
                     redirect: true
                 });
                 //}else{this.setState({err:res.data.err});console.log(res.data.err)}
             }).catch(err => {
                 console.log(err);
+            });
+    }
+    getListeMembres(){
+        console.log("getListeMembres");
+        let url = 'http://localhost:4242/membre/liste';
+        api.get(url)
+            .then(response => {
+                this.setState({listeMembres: response.data});
+            }).catch(err => {
+                console.log(err);
+                this.setState({listeMembres: [] });
             });
     }
     render() {
@@ -106,38 +136,56 @@ export default class GroupeCreation extends Component {
             <div style={{ marginTop: 20 }}>
                 <h3>Création d'un groupe de conversation</h3>
                 <form onSubmit={this.onSubmit}>
+                    {this.state.err.map((item) =>
+                        <h4>{item}</h4>
+                    )}
                     <div className="form-group">
-                        <label>Nom du groupe: </label>
+                        <label><h4>Nom du groupe:</h4> </label>
                         <input type="text"
                             className="form-control"
                             placeholder="Choisissez le nom de votre groupe."
                             value={this.state.nom_groupe}
                             onChange={this.onChangeNom_groupe}
                         />
-                        {/* 
-                        {this.state.nom_groupe.length < 37 &&
-                            this.state.nom_groupe.length !== 0 &&
-                            <p style={{ color: "red" }}>5 charactères minimum pour le nom de votre groupe !</p>
-                        }
-                        {this.state.nom_groupe.length > 37 &&
-                            <p style={{ color: "red" }}>37 charactères maximum pour le nom de votre groupe !</p>
-                        }*/}
-                        {/*this.state.nom_groupe_existe === true &&
-                            <p style={{ color: "red" }}>Ce nom de groupe est déjà utilisé !</p>
-                        */}
+                        <div><h4>Privé</h4>
+          Décochez la case si vous voulez un groupe privé.
+          <p>Toutes vos conversations seront ainsi marqués comme tel.</p></div>
+                        <label>
+                            privé
+          <input
+                                name="prive" type="checkbox"
+                                checked={this.state.prive}
+                                onChange={this.handleChangePrive} />
+                        </label>
                     </div>
-{/*
-                    <tbody>
-                        <tr>
-                            <td><input type="radio" name="privé"
-                                value="prive"
-                                checked={this.state.prive === "prive"}
-                                onChange={this.onChangeBoolean} />{"prive"}
-                            </td>
-                        </tr>
-                    </tbody>
-*/}
-                    {/*TODO boucle for avec liste des membres et un radio à côté */}
+                    <div>
+                        <h3>Choisissez vos membres parmi la liste des membres du site</h3>
+                        <table className="table table-striped" style={{ marginTop: 20 }} >
+                            <thead>
+                                <tr>
+                                    <th>Pseudo</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.listeMembres.map((membre) =>
+                                    <tr>
+                                        <td> {membre.pseudo}</td>
+                                        <td>
+                                            <label>
+                                            ajouté à la liste des membres de ce groupe.
+                                                <input
+                                                    name= "membres_groupe" type="checkbox"
+                                                    checked={this.state.membres_groupe}
+                                                    onChange={this.handleChangeMembresGroupe}
+                                                />
+                                            </label>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                     <div className="form-group">
                         <input type="submit" value="Création" className="btn btn-primary" />
                     </div>
