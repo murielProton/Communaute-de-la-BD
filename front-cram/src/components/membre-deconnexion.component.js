@@ -4,13 +4,13 @@ import Cookies from 'universal-cookie';
 
 
 
-export default class DeconnectionMembre extends Component {
-
+export default class Deconnection extends Component {
     constructor(props) {
         super(props);
-        const cookies = new Cookies()
+        const cookies = new Cookies();
 
         cookies.remove('Session');
+        console.log("deconnection");
         this.props.setPseudo(null);
     }
     render() {

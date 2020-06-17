@@ -8,6 +8,7 @@ const express = require('express');
 const app = express();
 
 const membre_routes = express.Router(); // Route pour les membres
+const groupe_routes = express.Router();
 
 const bodyParser = require('body-parser'); // Permet de découper les informations envoyées depuis le front pour être traitées par le back
 const cors = require('cors'); // Facilite la gestion des routes
@@ -21,13 +22,14 @@ app.use(bodyParser.urlencoded({     // Pour le support des URL-encoded bodies
 
 app.use(cors()); // Permet d'utiliser cors
 app.use(membre_routes); // Permet d'utiliser les routes pour les membres
+app.use('/groupe', groupe_routes);// évite de réécrire /groupe à chaque fois qu'on fait une route groupe
 
 mongoose.connect('mongodb://localhost:27042/CRAM', { useNewUrlParser: true });
 //mongoose.connect('mongodb://localhost/CRAM', { useNewUrlParser: true });
 
 // Ma connexion à la base de données doit être faite dans ce fichier. Sinon, le programme enverra un message d'erreur: "Membre is not a constructor"
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'erreur de connexion:'));
+db.on('err', console.error.bind(console, 'erreur de connexion:'));
 db.once('open', function () {
     console.log('connecté à la base de données CRAM');
 
@@ -37,7 +39,6 @@ db.once('open', function () {
 //récupérer les fonctions exportés depuis le fichier serveur-membre-fonction dans le même dossier
 var funct = require('./serveur-membre-fonction');
 // Recherche par utilisateur pour que le pseudo soit unique. Retourne une erreur si le pseudo existe déjà
-//la fonction suivante existe déjà dans serveur-membre-fonction pourquoi faire une route pour cela ?
 membre_routes.route('/membre/pseudo').post(function (req, res) {
     let erreurs = [];
     console.log("Dans le pseudo est-il déjà utilisé");
@@ -130,8 +131,8 @@ membre_routes.route('/membre/profil/:id').get(function (req, res) {
         });
 });
 
-// Supprime totalement le profil d'un membre dans la base de donnée
-membre_routes.route('/membre/supprime/:id').get(function (req, res) {
+// Supprimer totalement le profil d'un membre dans la base de donnée
+membre_routes.route('/membre/supprimer/:id').get(function (req, res) {
     Membre.findByIdAndDelete(req.params.id, function (err, membre) {
         console.log(req.params.id)
         console.log('Dans la route supprimer membre.')
@@ -139,12 +140,38 @@ membre_routes.route('/membre/supprime/:id').get(function (req, res) {
             res.status(403).send("membre non trouve");
             console.log("membre non trouvé");
         } else {
-            res.status(200).send("Membre supprime");
-            console.log("Membre supprime");
+            res.status(200).send("Membre supprimer");
+            console.log("Membre supprimer");
         }
     })
 })
-
+//------------------------------------------------------------------------------------------------------------------------------------------
+//ROUTES GROUPES
+//http://localhost:27042/CRAM/groupe/creation
+groupe_routes.route('/creation').post(function (req, res, membre) {
+    console.log("je suis dans groupe création.")
+    let groupe = new Groupe(req.body);
+    let err =[]
+    //gestion des erreurs
+    //let err = await funct.generateurErreursGroupeCreation(req, member);
+    //console.log("serveur Groupe Création err = "+err+ err.length);
+    if (err.length > 0) {
+        res.status(403).json({ 'err': err })
+        return;
+    } else {
+        groupe.admin_groupe = Membre.pseudo;
+        groupe.date_c_g = Date.now();
+        groupe.save()
+            .then(groupe => {
+                res.status(200).json({ 'route': '/creation', 'status': "OK", 'groupe': 'groupe ajouté avec succès' });
+                //attention les redirects ne se font pas du côté server mais du côté component !!!! reférence create-memeber.component
+            })
+            .catch(err => {
+                console.log("serveur Groupe Création err = "+err+ err.length);
+                res.status(403).send({ 'err': ["Erreur Technique"] });
+            });
+    }
+});
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //FONCTIONS UTILES
@@ -159,6 +186,7 @@ function toSha1(password) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
+
 // Permet le lancement du serveur
 app.listen(4242, function () {
     console.log('Connecté au serveur localhost:4242');

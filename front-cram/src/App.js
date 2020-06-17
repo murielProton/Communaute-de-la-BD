@@ -11,17 +11,26 @@ import InscriptionMembre from './components/membre-inscription.component';
 import ConnexionMembre from './components/membre-connexion.component';
 import DeconnexionMembre from './components/membre-deconnexion.component';
 import ProfilMembre from './components/membre-profil.component';
-import SupprimeMembre from './components/membre-supprimer.component';
+import SupprimerMembre from './components/membre-supprimer.component';
 import AjourMembre from './components/membre-maj.component';
 import ListeMembres from './components/membre-liste.component';
+import GroupeCreation from './components/groupe-creation.component';
+
+
 // TODO changer la couleur de la nav bar {{color : "#db504a"}}
+// TODO si admin voit pas la même chose 
 function LiensDisponiblesQuandConnecte(props) {
   const pseudo = props.pseudo;
   console.log("pseudo =" + pseudo);
   if (pseudo) {
     return <Nav className="mr-auto">
       <Nav.Link href="/">Accueil</Nav.Link>
-      <Nav.Link href="/liste" >Ma page</Nav.Link>
+      <NavDropdown title="Personnel" id="basic-nav-dropdown">
+      <NavDropdown.Item href="/liste" >Ma page</NavDropdown.Item>
+      {/*TODO if groupe personnel déjà créé alors tu vas sur mon groupe détails 
+      Du groupe détail le membre pourra créer d'autres groupes*/}
+      <NavDropdown.Item href="/groupe/creation" >Mes groupes</NavDropdown.Item>
+      </NavDropdown>
       <NavDropdown title="Liste" id="basic-nav-dropdown">
         <NavDropdown.Item href="/liste">Liste des membres</NavDropdown.Item>
         <NavDropdown.Item href="/allposts">A voir</NavDropdown.Item>
@@ -81,9 +90,10 @@ class App extends Component {
             <Route path="/connexion" render={(props) => <ConnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
             <Route path="/deconnexion" render={(props) => <DeconnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
             <Route path="/profil/:id" exact component={ProfilMembre} />
-            <Route path="/supprime/:id" exact component={SupprimeMembre} />
+            <Route path="/supprimer/:id" exact component={SupprimerMembre} />
             <Route path="/ajour/:id" component={AjourMembre} />
             <Route path="/liste" exact component={ListeMembres} />
+            <Route path="/groupe/creation" exact component={GroupeCreation} />
             </div>
           </Router>
     );
