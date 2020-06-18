@@ -23,7 +23,7 @@ export default class InscriptionMembre extends Component {
             mot_de_passe_confirmation: "",
             date_de_naissance: "",
             ville: "",
-            admin: false,
+            admin: false, // Commenter cette ligne si on veut cérer un administrateur (à faire aussi dans le model membre du back et en ligne 119)
             mot_de_passe_correct: true,
             email_correct: true,
             membre_cree: false,
@@ -81,11 +81,11 @@ export default class InscriptionMembre extends Component {
         console.log('pseudo longueur: ', this.state.pseudo.length)
 
         const pseudoMembre = {pseudo: this.state.pseudo};
-        api.post('membre/pseudo', pseudoMembre)
+        api.post('membre/pseudo', pseudoMembre) // Cette recherche permet de savoir si le pseudo est déjà utilisé
         // axios.post('http://localhost:4242/membre/pseudo', pseudoMembre) // Cette recherche permet de savoir si le pseudo est déjà utilisé
         .then(res => {
             console.log(res.data);
-            const nouveauMembre ={
+            const nouveauMembre ={ // Regroupe les informations à envoyer au backend pour la création de l'utilisateur
                 pseudo: this.state.pseudo,
                 email: this.state.email,
                 mot_de_passe: this.state.mot_de_passe,
@@ -94,6 +94,10 @@ export default class InscriptionMembre extends Component {
                 ville: this.state.ville,
                 admin: this.state.admin
             }
+
+            const nouvelleCollection ={ // Regroupe les informations à envoyer au backend pour la création de la collection de bédés
+                proprietaire: this.state.pseudo
+            }
     
             if(this.state.mot_de_passe === this.state.mot_de_passe_confirmation
                 && RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email)
@@ -101,8 +105,8 @@ export default class InscriptionMembre extends Component {
                 && this.state.pseudo.length < 21) {
                 console.log('dans le if');
                 this.setState({membre_cree: true});
-                // axios.post('http://localhost:4242/membre/inscription', nouveauMembre) // Cette recherche permet d'enregistrer le nouveau membre
-                api.post('membre/inscription', nouveauMembre) // Cette recherche permet d'enregistrer le nouveau membre
+                // axios.post('http://localhost:4242/membre/inscription', nouveauMembre) // Cette requête permet d'enregistrer le nouveau membre
+                api.post('membre/inscription', nouveauMembre) // Cette requête permet d'enregistrer le nouveau membre
                     .then(res => console.log(res.data));
                 
                     this.setState({ // to reinitialyse the form after being submitted
@@ -112,9 +116,12 @@ export default class InscriptionMembre extends Component {
                     mot_de_passe_confirmation: "",
                     date_de_naissance: "",
                     ville: "",
-                    admin: false,
+                    admin: false, // Commenter cette ligne si on veut cérer un administrateur (à faire aussi dans le model membre du back et en ligne 26)
                     redirection: true
                     })
+
+                    api.post('collection/creation', nouvelleCollection); // Cette requête permet de créer la collection dès l'inscription du nouveau membre
+
             } else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation
                 && RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) === false){
                 console.log('dans le else');
@@ -169,7 +176,7 @@ export default class InscriptionMembre extends Component {
                                 value={this.state.email}
                                 onChange={this.onChangeEmail}
                                 />
-                        {this.state.correct_email === false &&
+                        {this.state.email_correct === false &&
                         <p style={{color: "red"}}>Email non conforme !</p>
                         }
                     </div>

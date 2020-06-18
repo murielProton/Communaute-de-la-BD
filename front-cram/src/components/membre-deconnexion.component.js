@@ -1,19 +1,23 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { Redirect } from 'react-router';
 import Cookies from 'universal-cookie';
 
 
-const Deconnection = () => {
 
-    const cookies = new Cookies()
+export default class Deconnection extends Component {
+    constructor(props) {
+        super(props);
+        const cookies = new Cookies();
 
-    cookies.remove('Session');
-
+        cookies.remove('Session');
+        console.log("deconnection");
+        this.props.setPseudo(null);
+    }
+    render() {
     return(
         <div>
             <Redirect to="/connexion"/>;
         </div>
-    )
+    );
+    }
 }
-
-export default Deconnection;

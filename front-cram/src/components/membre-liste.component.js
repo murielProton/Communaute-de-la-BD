@@ -40,7 +40,7 @@ export default class ListeMembres extends Component {
                             <td>{membre.email}</td>
                             <td>{membre.ville}</td>
                             <td><Link to={"/profil/"+membre._id} className="btn btn-primary">Vue du profil</Link></td>
-                            <td><Link to={"/supprime/"+membre._id} className="btn btn-danger">Supprimer</Link></td>
+                            <td><Link to={"/supprimer/"+membre._id+"/"+membre.pseudo} className="btn btn-danger">Supprimer</Link></td>
                         </tr>
                     )}
                     </tbody>
