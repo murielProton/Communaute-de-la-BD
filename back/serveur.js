@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({     // Pour le support des URL-encoded bodies
 
 app.use(cors()); // Permet d'utiliser cors
 app.use(membre_routes); // Permet d'utiliser les routes pour les membres
-app.use('/groupe', groupe_routes);// évite de réécrire /groupe à chaque fois qu'on fait une route groupe
+app.use(groupe_routes);// évite de réécrire /groupe à chaque fois qu'on fait une route groupe
 
 mongoose.connect('mongodb://localhost:27042/CRAM', { useNewUrlParser: true });
 //mongoose.connect('mongodb://localhost/CRAM', { useNewUrlParser: true });
@@ -148,29 +148,21 @@ membre_routes.route('/membre/supprimer/:id').get(function (req, res) {
 //------------------------------------------------------------------------------------------------------------------------------------------
 //ROUTES GROUPES
 //http://localhost:4242/groupe/creation
-groupe_routes.route('/creation').post(async function (req, res, membre) {
+
+async function transformerListePseudoEnListe_id(liste_membre_groupe_pseudo){
+    let liste_membre_groupe_object_id = [];
+    for (let index = 0; index < liste_membre_groupe_pseudo.length; index++) {
+        let pseudoMembre = liste_membre_groupe_pseudo[index];
+        let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
+        liste_membre_groupe_object_id.push(membre._id);
+    }
+    return liste_membre_groupe_object_id;
+}
+groupe_routes.route('/groupe/creation').post(async function (req, res, membre) {
     console.log("je suis dans groupe création.");
     let groupe = new Groupe(req.body);
-    async function transformerListePseudoEnListe_id(req) {
-        
-        //Adaptation à faire pour récupérer le liste des mebres en objectId à la place des login.
-        console.log("req.body.membre_groupe_pseudonymes");
-        console.log(req.body.membre_groupe_pseudonymes);
-        console.log("groupe avant sauvegarde " + groupe);
-        let liste_membre_groupe_pseudo = req.body.membre_groupe_pseudonymes;
-        console.log("liste_membre_groupe_pseudo");
-        console.log(liste_membre_groupe_pseudo);
-        let liste_membre_groupe_object_id = [];
-        for (let index = 0; index < liste_membre_groupe_pseudo.length; index++) {
-            let pseudoMembre = liste_membre_groupe_pseudo[index];
-            let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
-            liste_membre_groupe_object_id.push(membre._id);
-        }
-        return liste_membre_groupe_object_id;
-    }
-    liste_membre_groupe_object_id = await transformerListePseudoEnListe_id(req);
-    console.log("transformerListePseudoEnListe_id = "+liste_membre_groupe_object_id);
-    groupe.membres_groupe = liste_membre_groupe_object_id;
+    //Adaptation à faire pour récupérer le liste des mebres en objectId à la place des login
+    groupe.membres_groupe = await transformerListePseudoEnListe_id(req.body.membre_groupe_pseudonymes);
     let err = []
     //gestion des erreurs
     //let err = await funct.generateurErreursGroupeCreation(req, member);
@@ -185,7 +177,6 @@ groupe_routes.route('/creation').post(async function (req, res, membre) {
                 for (let index = 0; index < liste_membre_groupe_pseudo.length; index++) {
                     let pseudoMembre = liste_membre_groupe_pseudo[index];
                     let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
-                    console.log(membre);
                     membre.groupes.push(groupe);
                     membre.save();
                 }
@@ -200,7 +191,7 @@ groupe_routes.route('/creation').post(async function (req, res, membre) {
     }
 });
 // Affiche la liste des groupes dans la base de donnée
-groupe_routes.route('/liste').get(async function (req, res) {
+groupe_routes.route('/groupe/liste').get(async function (req, res) {
     let ListeGroupe = await Groupe.find().populate('membres_groupe').sort({ nom_groupe: -1 });
     let err = [];
     if (ListeGroupe.length == 0) {

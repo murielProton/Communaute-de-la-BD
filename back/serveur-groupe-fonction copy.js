@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-let Membre = require('./model_membre');
+let Groupe = require('./model_groupe');
 
 /* DEBUT des FONCTIONS UTILES MEMBERS--------------------------------------------------------------------*/
 //login entre 5 et 20 char
