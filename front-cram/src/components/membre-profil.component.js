@@ -39,12 +39,12 @@ export default class ProfilMembre extends Component {
                         <p key={membre.uid}>Date de Naissance : {new Intl.DateTimeFormat('fr-Fr',{ month:'long',day:'2-digit',year:'numeric'}).format(new Date(membre.date_de_naissance))}</p>
                         <p key={membre.uid}>Ville: {membre.ville}</p>
                         <p key={membre.uid}>Membre depuis le: {new Intl.DateTimeFormat('fr-Fr',{ month:'long',day:'2-digit',year:'numeric'}).format(new Date(membre.date_inscription))}</p>
+                <div className="form-group">
+                <Link to={"/validmaj/"+this.state.id} className="btn btn-primary" >Modifier mon profil</Link>
+                <Link to={"/supprimer/"+ this.state.id + "/" + membre.pseudo} className="btn btn-danger">Supprimer mon compte</Link>
+                 </div>
             </div>
              ) )}   
-                <div className="form-group">
-                <Link to={"/ajour/"+this.state.id} className="btn btn-primary" >Modifier mon profil</Link>
-                <Link to={"/supprime/"+ this.state.id} className="btn btn-danger">Supprimer mon compte</Link>
-                 </div>
             </div>
         )
     }
