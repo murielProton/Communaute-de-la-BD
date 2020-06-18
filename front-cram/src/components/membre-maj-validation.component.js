@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import api from '../api';
 // import LoginProfile from './user-session.component';
 
-export default class ConnexionMembre extends Component {
+export default class ValidMajMembre extends Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ export default class ConnexionMembre extends Component {
             type: false,
             connection_fail: false,
             redirection: false,
-            cookies: new Cookies()
+            
         }
     }
 
@@ -47,18 +47,17 @@ export default class ConnexionMembre extends Component {
             pseudo: this.state.pseudo,
             mot_de_passe: this.state.mot_de_passe,
         }
-
+        const id= this.props.match.params.id
         // axios.post('http://localhost:4242/membre/connexion', Membre)
-        api.post('membre/connexion', Membre)
+        api.post('membre/validmaj/'+id, Membre)
             .then(res => {
                 console.log(res.data);
-                console.log("Connexion réussie !!");
-                this.state.cookies.set('Session', this.state.pseudo, {path: '/', maxAge: 86400, sameSite:'Strict'}); // Le cookie a une vie de 24h (86400 secondes)
-                console.log("cookie", this.state.cookies.get('Session'));
+                console.log("Connexion validMaj réussie !!");
+               // this.state.cookies.set('Session', this.state.pseudo, {path: '/', maxAge: 300, sameSite:'Strict'});
+               // console.log("cookie", this.state.cookies.get('Session'));
                 // LoginProfile.setName(this.state.login);
                 // localStorage.setItem('username', this.state.login);
                 this.setState({ redirection: true })
-                this.props.setPseudo(this.state.pseudo); // Permet de récupérer dans les autres fichiers ce que l'on mets dans le constructeur
             })
             .catch(err => {
                 console.log(err);   
@@ -68,14 +67,14 @@ export default class ConnexionMembre extends Component {
     }
 
     render() {
-        // const { redirection } = this.state;
-        // if (redirection) {
-        //  //Redirect to the page
-        //  return <Redirect to={`/a/${localStorage.getItem('username')}`}/>;
-        // }
+        const { redirection } = this.state;
+        if (redirection) {
+          //Redirect to the page
+         return <Redirect to={`/choixmaj/${this.props.match.params.id}`}/>;
+         }
         return(
             <div style={{marginTop: 20}}>
-                <h3>Connexion</h3>
+                <h3>Indiquez à nouveaux vos identifiants pour pouvoir modifier votre compte</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Pseudo: </label>

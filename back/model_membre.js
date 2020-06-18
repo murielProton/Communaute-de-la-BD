@@ -39,7 +39,12 @@ let Membre = new Schema({
 
     admin: { 
         type: Boolean,
-        default: false 
+        default: false // A mettre true si on veux créer un admin et comment ligne 26 et 119 dans le component inscription 
+    },
+
+    banni: {
+        type: Boolean,
+        default: false
     },
 
     groupes: [{ type: Schema.Types.ObjectId, ref: 'Groupe'}]
