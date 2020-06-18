@@ -39,6 +39,7 @@ async function cetEmailEstUniqueEnCollection(req) {
 }
 // email = regex email
 async function estEmailValide(req) {
+
     console.log("je rentre dans la fonction estEmailValide");
     const regexMail = RegExp('^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$');
     if (!regexMail.test(req.body.email)) {
@@ -74,6 +75,7 @@ function estLaDateInscriptionValide(req) {
     console.log("date now " +Date.now());
     if (req.body.date_inscription != Date.now()) {
         console.log("erreur sur la date d'inscription.");
+
         return false;
     } else {
         return true;
@@ -119,6 +121,7 @@ exports.generateurErreursInscription = async function generateurErreursInscripti
     return err;
 }
 // Fonction qui converti les mots de passes en sha1
+
 exports.toSha1 = function toSha1(password) {
     // On crée notre Hasher avec l'algo qu'on veux
     var shasum = crypto.createHash('sha1');
@@ -170,4 +173,4 @@ exports.generateErrorsForUpdate = async function generateErrorsForUpdate(req, me
     return errors;
 }
 
-/* FIN des FONCTIONS UTILES MEMBERS--------------------------------------------------------------------*/
+/* FIN des FONCTIONS UTILES MEMBERS--------------------------------------------------------------------*

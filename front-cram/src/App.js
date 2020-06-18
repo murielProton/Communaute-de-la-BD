@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Route } from "react-router-dom"; // Eu par npm
 import Cookies from 'universal-cookie'; // Eu par npm install universal-cookie
 import "bootstrap/dist/css/bootstrap.min.css"; // Eu par npm install bootstrap
 // import './App.css';
-
 import Navbar from 'react-bootstrap/Navbar'; //Eu par npm install react-bootstrap bootstrap
 import NavDropdown from 'react-bootstrap/NavDropdown'; //Eu par npm install react-bootstrap bootstrap
 import Nav from 'react-bootstrap/Nav'; //Eu par npm install react-bootstrap bootstrap
 
+
 import InscriptionMembre from './components/membre-inscription.component';
 import ConnexionMembre from './components/membre-connexion.component';
-import Deconnexion from './components/membre-deconnexion.component';
+import DeconnexionMembre from './components/membre-deconnexion.component';
 import ProfilMembre from './components/membre-profil.component';
 import ListeMembres from './components/membre-liste.component';
 import MajMembre from './components/membre-maj-autre.component';
@@ -40,6 +40,7 @@ function LiensDisponiblesQuandConnecte(props) {
       <NavDropdown.Item href="/collection" >Ma collection de bds</NavDropdown.Item>
       <NavDropdown.Item href="/groupe/creation" >Mes groupes</NavDropdown.Item>
       </NavDropdown>
+
       <NavDropdown title="Liste" id="basic-nav-dropdown">
         <NavDropdown.Item href="/liste">Liste des membres</NavDropdown.Item>
         <NavDropdown.Item href="/allposts">A voir</NavDropdown.Item>
@@ -123,35 +124,3 @@ class App extends Component {
   }
 }
 export default App;
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <Router>
-//         {/* Route pour la page d'accueil */}
-//         {/* <Route path="/" exact component={Home} /> */}
-
-//         {/* Routes pour les membres: */}
-//         <Route path="/inscription" exact component={InscriptionMembre} /> 
-//         <Route path="/connexion" exact component={ConnexionMembre} />
-//         <Route path="/deconnexion" exact component={Deconnexion} />
-//         <Route path="/profil/:id" exact component={ProfilMembre} />
-//         <Route path="/supprimer/:id/:pseudo" exact component={SupprimerMembre} />
-//         <Route path="/validmaj/:id" component={ValidMajMembre} /> 
-//         <Route path="/choixmaj/:id" component={ChoixMajMembre}/>
-//         <Route path="/majmotdepasse/:id" component={MajMotDePasseMembre}/>
-//         <Route path="/majemail/:id" component={MajEmailMembre}/>
-//         <Route path="/majprofil/:id" component={MajMembre}/>
-//         <Route path="/liste/membres" exact component={ListeMembres}/>
-
-//         {/* Routes pour les bedes */}
-//         <Route path="/ajoutbede" exact component={AjoutBede} />
-//         <Route path='/liste/bds' component={ListeBedes} />
-//         <Route path="/bd/:id" component={DetailBede} />
-
-//       </Router>
-//     </div>
-//   );
-// }
-
-// export default App;
