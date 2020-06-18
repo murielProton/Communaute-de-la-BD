@@ -15,6 +15,7 @@ import SupprimerMembre from './components/membre-supprimer.component';
 import AjourMembre from './components/membre-maj.component';
 import ListeMembres from './components/membre-liste.component';
 import GroupeCreation from './components/groupe-creation.component';
+import GroupeListe from './components/groupe-liste.component';
 
 
 // TODO changer la couleur de la nav bar {{color : "#db504a"}}
@@ -33,6 +34,7 @@ function LiensDisponiblesQuandConnecte(props) {
       </NavDropdown>
       <NavDropdown title="Liste" id="basic-nav-dropdown">
         <NavDropdown.Item href="/liste">Liste des membres</NavDropdown.Item>
+        <NavDropdown.Item href="groupe/liste">Liste des groupes</NavDropdown.Item>
         <NavDropdown.Item href="/allposts">A voir</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
@@ -94,6 +96,7 @@ class App extends Component {
             <Route path="/ajour/:id" component={AjourMembre} />
             <Route path="/liste" exact component={ListeMembres} />
             <Route path="/groupe/creation" exact component={GroupeCreation} />
+            <Route path="/groupe/liste" exact component={GroupeListe} />
             </div>
           </Router>
     );

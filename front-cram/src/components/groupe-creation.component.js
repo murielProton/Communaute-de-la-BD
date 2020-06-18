@@ -67,9 +67,11 @@ export default class GroupeCreation extends Component {
     handleChangeMembresGroupe(e) {
         const membre = e.target.name;
         const isChecked = e.target.checked;
+        console.log(membre, isChecked);
         this.setState(prevState => ({
             checkedMembres: prevState.checkedMembres.set(membre, isChecked)
         }));
+        
         /*if(membre == isChecked){
             let date_c_g = new Date();
             membres_groupe = membres_groupe.push(date_c_g : membre);
@@ -86,12 +88,23 @@ export default class GroupeCreation extends Component {
         }
         let admin_groupe = this.state.cookies.get('Session');
         let date_c_g = new Date();
+        /* fonction array membre group */
+        let membres = [];
+        //membres.push(admin_groupe);
+        for (const entry of this.state.checkedMembres.entries()) {
+            let pseudo = entry[0];
+            let selectionne = entry[1];
+            if(selectionne){
+                membres.push(pseudo);
+            }
+        }
+        /* fonction array membre group */
         var groupeACreer = {
             nom_groupe: this.state.nom_groupe,
             admin_groupe: admin_groupe,
             prive: this.state.prive,
             date_c_g: date_c_g,
-            membres_groupe: []
+            membres_groupe_as_login: membres
         };
         console.log("Form submitted:");
         console.log(groupeACreer);
@@ -102,7 +115,7 @@ export default class GroupeCreation extends Component {
             this.state.err.push("Vous devez donner un nom à votre groupe de discussion.");
             console.log(this.state.err);
         }
-        if (this.state.nom_groupe.length<37||this.state.nom_groupe>=1){
+        if (this.state.nom_groupe.length>37||this.state.nom_groupe<1){
             this.state.err.push("Le nom de votre groupe doit comprendre entre 1 et 37 charactères.");
             console.log(this.state.err);
         }
@@ -180,12 +193,14 @@ export default class GroupeCreation extends Component {
                         <h3>Choisissez vos membres parmi la liste des membres du site</h3>
                         <React.Fragment>
                             {this.state.listeMembres.map((membre) =>
+                            <div>
                                 <label key={membre.key}>
                                     {membre.pseudo}
                                     <Checkbox name={membre.pseudo}
                                         checked={this.state.checkedMembres.get(membre.pseudo)}
                                         onChange={this.handleChangeMembresGroupe} />
-                                </label>)
+                                </label>
+                            </div>)
                             }
                         </React.Fragment>
                     </div>
