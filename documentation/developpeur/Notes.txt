@@ -71,3 +71,7 @@ constructor(props) {
                             </tbody>
                         </table>
         )}
+
+        Attention pour créer un Administarteur
+        Il fau aller dans le model_membre.js & dans le membre-inscripton.component.js pour changer la variable Admin à true.
+        La variable admin n'est pas setter dans le serveur.js 
