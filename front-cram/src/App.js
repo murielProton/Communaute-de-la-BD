@@ -41,6 +41,7 @@ function LiensDisponiblesQuandConnecte(props) {
       </NavDropdown>
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>
+
   } else {
     return <Nav className="mr-auto">
       <Nav.Link href="/">Accueil</Nav.Link>
@@ -101,5 +102,6 @@ class App extends Component {
           </Router>
     );
   }
+
 }
 export default App;
