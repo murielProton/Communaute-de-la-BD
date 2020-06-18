@@ -149,20 +149,29 @@ membre_routes.route('/membre/supprimer/:id').get(function (req, res) {
 //ROUTES GROUPES
 //http://localhost:4242/groupe/creation
 groupe_routes.route('/creation').post(async function (req, res, membre) {
-    console.log("je suis dans groupe création.")
+    console.log("je suis dans groupe création.");
     let groupe = new Groupe(req.body);
-    //Adaptation à faire pour récupérer le liste des mebres en objectId à la place des login.
-    console.log(req.body);
-    console.log("group before save "+groupe);
-    let listeMembreGroupAsLogin =req.body.membres_groupe_as_login;
-    let listMembreAsObjectId = [];
-    for (let index = 0; index < listeMembreGroupAsLogin.length; index++) {
-        let pseudoMembre =listeMembreGroupAsLogin[index];
-        let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
-        listMembreAsObjectId.push(membre._id);
+    async function transformerListePseudoEnListe_id(req) {
+        
+        //Adaptation à faire pour récupérer le liste des mebres en objectId à la place des login.
+        console.log("req.body.membre_groupe_pseudonymes");
+        console.log(req.body.membre_groupe_pseudonymes);
+        console.log("groupe avant sauvegarde " + groupe);
+        let liste_membre_groupe_pseudo = req.body.membre_groupe_pseudonymes;
+        console.log("liste_membre_groupe_pseudo");
+        console.log(liste_membre_groupe_pseudo);
+        let liste_membre_groupe_object_id = [];
+        for (let index = 0; index < liste_membre_groupe_pseudo.length; index++) {
+            let pseudoMembre = liste_membre_groupe_pseudo[index];
+            let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
+            liste_membre_groupe_object_id.push(membre._id);
+        }
+        return liste_membre_groupe_object_id;
     }
-    groupe.membres_groupe = listMembreAsObjectId;
-    let err =[]
+    liste_membre_groupe_object_id = await transformerListePseudoEnListe_id(req);
+    console.log("transformerListePseudoEnListe_id = "+liste_membre_groupe_object_id);
+    groupe.membres_groupe = liste_membre_groupe_object_id;
+    let err = []
     //gestion des erreurs
     //let err = await funct.generateurErreursGroupeCreation(req, member);
     //console.log("serveur Groupe Création err = "+err+ err.length);
@@ -173,8 +182,8 @@ groupe_routes.route('/creation').post(async function (req, res, membre) {
         groupe.date_c_g = Date.now();
         groupe.save()
             .then(async groupe => {
-                for (let index = 0; index < listeMembreGroupAsLogin.length; index++) {
-                    let pseudoMembre =listeMembreGroupAsLogin[index];
+                for (let index = 0; index < liste_membre_groupe_pseudo.length; index++) {
+                    let pseudoMembre = liste_membre_groupe_pseudo[index];
                     let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
                     console.log(membre);
                     membre.groupes.push(groupe);
@@ -184,10 +193,10 @@ groupe_routes.route('/creation').post(async function (req, res, membre) {
                 //attention les redirects ne se font pas du côté server mais du côté component !!!! reférence create-memeber.component
             })
             .catch(err => {
-                console.log("serveur Groupe Création err = "+err+ err.length);
+                console.log("serveur Groupe Création err = " + err + err.length);
                 res.status(403).send({ 'err': ["Erreur Technique"] });
             });
-        
+
     }
 });
 // Affiche la liste des groupes dans la base de donnée
@@ -200,7 +209,7 @@ groupe_routes.route('/liste').get(async function (req, res) {
         res.status(403).json({ 'route': 'groupe/liste', 'status': 'KO', 'err': err });
         return (err);
     } else {
-        res.status(200).json({'status': 'OK', 'ListeGroupe' : ListeGroupe});
+        res.status(200).json({ 'status': 'OK', 'ListeGroupe': ListeGroupe });
     }
 });
 

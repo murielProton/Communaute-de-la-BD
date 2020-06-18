@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import api from '../api';
 import Cookies from 'universal-cookie';
-import PropTypes from 'prop-types';
-import checkboxes from './checkboxes.component';
+//Atention sans cet import les checkboxes du render ne fonctionnent pas!
 import Checkbox from './Checkbox.component';
 // Permet de simplifier la requête axios et surtout de modifier plus facilement l'adresse du back lors du déploiement
 import { Redirect } from 'react-router';
@@ -12,7 +11,6 @@ export default class GroupeCreation extends Component {
     constructor(props) {
         super(props);
 
-        console.log("je suis dans constructor groupe creation.");
         this.onChangeNom_groupe = this.onChangeNom_groupe.bind(this);
         this.onChangeAdmin_groupe = this.onChangeAdmin_groupe.bind(this);
         this.handleChangePrive = this.handleChangePrive.bind(this);
@@ -67,20 +65,13 @@ export default class GroupeCreation extends Component {
     handleChangeMembresGroupe(e) {
         const membre = e.target.name;
         const isChecked = e.target.checked;
-        console.log(membre, isChecked);
         this.setState(prevState => ({
             checkedMembres: prevState.checkedMembres.set(membre, isChecked)
         }));
-        
-        /*if(membre == isChecked){
-            let date_c_g = new Date();
-            membres_groupe = membres_groupe.push(date_c_g : membre);
-        }*/
     }
     onSubmit(e) {
         e.preventDefault();
         //récupère toutes les fonctions(e) et les traites. Sans cette ligne on ne sait pas quel champ est rempli.
-        console.log("On submit groupe création");
         if (!this.state.cookies.get('Session')) {
             let newError = ["Vous n'etes pas connecté."];
             this.setState({ err: newError });
@@ -104,29 +95,32 @@ export default class GroupeCreation extends Component {
             admin_groupe: admin_groupe,
             prive: this.state.prive,
             date_c_g: date_c_g,
-            membres_groupe_as_login: membres
+            membre_groupe_pseudonymes: membres
         };
-        console.log("Form submitted:");
-        console.log(groupeACreer);
         //axios l'application ne connait pas
         // api.post('http://localhost:4242/groupe/creation', pseudoMembre)
-        //TODO sécurités front
         if (this.state.nom_groupe == "" || this.state.nom_groupe == null) {
             this.state.err.push("Vous devez donner un nom à votre groupe de discussion.");
             console.log(this.state.err);
         }
-        if (this.state.nom_groupe.length>37||this.state.nom_groupe<1){
+        if (this.state.nom_groupe.length>37||this.state.nom_groupe.length<2){
             this.state.err.push("Le nom de votre groupe doit comprendre entre 1 et 37 charactères.");
             console.log(this.state.err);
         }
-        /*if (this.state.prive == "" || this.state.prive == null) {
-            this.state.err.push("Vous devez donnez une sécurité à votre groupe : privé ou public.");
+        if (this.state.prive == "" || this.state.prive == null) {
+            this.state.err.push("Vous devez donner une sécurité à votre groupe : privé ou public.");
+            console.log(this.state.err);
+        }
+        if (this.state.date_c_g != new Date()) {
+            //attention erreur malveillante
+            this.state.err.push("Erreur Technique sur la page création de groupe.");
+            console.log("La date n'est pas correcte.");
+        }
+        /*TODO
+        if (this.state.membre_groupe_pseudonymes.length<1){
+            this.state.err.push("Vous devez enregistrer des membres à votre groupe.");
             console.log(this.state.err);
         }*/
-        //TODO tous les champs doivent être remplis
-        //TODO nom de groupe unique en collection
-        //TODO 5 charactères minimum pour le nom de votre groupe
-        //if (this.state.nom_groupe.length < 37) {
         api.post('/groupe/creation', groupeACreer)
             // cet envoi permet d'enregistrer des nouveaux groupes
             .then(res => {
@@ -141,14 +135,12 @@ export default class GroupeCreation extends Component {
                     redirect: true,
                     err: []
                 });
-                //}else{this.setState({err:res.data.err});console.log(res.data.err)}
             }).catch(err => {
                 console.log(err);
             });
     }
 
     getListeMembres() {
-        console.log("getListeMembres");
         let url = 'http://localhost:4242/membre/liste';
         api.get(url)
             .then(response => {
@@ -191,6 +183,7 @@ export default class GroupeCreation extends Component {
                     </div>
                     <div>
                         <h3>Choisissez vos membres parmi la liste des membres du site</h3>
+                        <p>Attentions pensez à vous ajoutez, car ce n'est pas fait automatiquement.</p>
                         <React.Fragment>
                             {this.state.listeMembres.map((membre) =>
                             <div>

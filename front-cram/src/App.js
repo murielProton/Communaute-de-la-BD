@@ -30,7 +30,7 @@ function LiensDisponiblesQuandConnecte(props) {
       <NavDropdown.Item href="/liste" >Ma page</NavDropdown.Item>
       {/*TODO if groupe personnel déjà créé alors tu vas sur mon groupe détails 
       Du groupe détail le membre pourra créer d'autres groupes*/}
-      <NavDropdown.Item href="/groupe/creation" >Mes groupes</NavDropdown.Item>
+      <NavDropdown.Item href="groupe/creation" >Mes groupes</NavDropdown.Item>
       </NavDropdown>
       <NavDropdown title="Liste" id="basic-nav-dropdown">
         <NavDropdown.Item href="/liste">Liste des membres</NavDropdown.Item>
