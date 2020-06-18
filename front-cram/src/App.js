@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom"; // Eu par npm install react-router-dom
 import Cookies from 'universal-cookie'; // Eu par npm install universal-cookie
 import "bootstrap/dist/css/bootstrap.min.css"; // Eu par npm install bootstrap
-// import './App.css';
+import './App.css';
 import Navbar from 'react-bootstrap/Navbar'; //Eu par npm install react-bootstrap bootstrap
 import NavDropdown from 'react-bootstrap/NavDropdown'; //Eu par npm install react-bootstrap bootstrap
 import Nav from 'react-bootstrap/Nav'; //Eu par npm install react-bootstrap bootstrap
@@ -87,7 +87,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="container">
+        <div className="container EcritureRouge">
           <Navbar bg="primary" variant="dark" expand="lg">
             <Navbar.Brand href="/">CRAM</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

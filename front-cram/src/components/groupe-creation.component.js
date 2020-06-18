@@ -141,6 +141,7 @@ export default class GroupeCreation extends Component {
     }
 
     getListeMembres() {
+        //A FAIRE essayer sans 'http://localhost:4242/'
         let url = 'http://localhost:4242/membre/liste';
         api.get(url)
             .then(response => {
