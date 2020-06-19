@@ -10,7 +10,7 @@ export default class ListeBedes extends Component {
     }
     componentDidMount() {//Pour récupérer les données liste de la base de données, la méthode de cycle de vie componentDidMount est ajoutée:
         // axios.get('http://localhost:4242/bede/liste')
-        api.get('bede/liste')
+        api.get('bede/liste/bede')
             .then(response => {
                 this.setState({ bedes: response.data });
                 console.log(response.data);
@@ -34,12 +34,12 @@ export default class ListeBedes extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.state.bedes.map((bede) =>//nous parcourons la liste des tâches à faire en utilisant la fonction map. Chaque élément de tâche est généré à l'aide du composant Todo qui n'est pas encore implémenté. L'élément de tâche actuel est affecté à la propriété de tâche de ce composant.
+                    {this.state.bedes.map((bede, i) =>//nous parcourons la liste des tâches à faire en utilisant la fonction map. Chaque élément de tâche est généré à l'aide du composant Todo qui n'est pas encore implémenté. L'élément de tâche actuel est affecté à la propriété de tâche de ce composant.
                         <tr>
                             <td> {bede.serie}</td>
                             <td>{bede.tome}</td>
                             <td>{bede.titre}</td>
-                            <td><Link to={"/bd/"+bede._id} className="btn btn-primary">Voir plus</Link></td>
+                            <td><Link to={"/detail/bede/"+bede._id} className="btn btn-primary">Voir plus</Link></td>
                             {/* <td><Link to={"/supprimer/"+membre._id+"/"+membre.pseudo} className="btn btn-danger">Supprimer</Link></td> */}
                         </tr>
                     )}

@@ -15,43 +15,87 @@ import ProfilMembre from './components/membre-profil.component';
 
 import ListeMembres from './components/membre-liste.component';
 import MajMembre from './components/membre-maj-autre.component';
-import SupprimerMembre from './components/membre-supprimer.component';
 import ValidMajMembre from './components/membre-maj-validation.component';
 import ChoixMajMembre from './components/membre-maj-choix.component';
 import MajMotDePasseMembre from './components/membre-maj-motdepasse.component';
 import MajEmailMembre from './components/membre-maj-email.component';
+import SupprimerMembre from './components/membre-supprimer.component';
 
 import AjoutBede from './components/bede-ajouter.component';
 import ListeBedes from './components/bede-liste.component';
 import DetailBede from './components/bede-detail.component';
+import MajBede from './components/bede-maj.component';
 
-import GroupeCreation from './components/groupe-creation.component';
-import GroupeListe from './components/groupe-liste.component';
+/*import AjoutCollection from './components/collection-ajouter.component';
+import ListeCollection from './components/collection-liste.component';
+//import DetailCollection from './components/collection-detail.component';
+import MajCollection from './components/collection-maj.component';
+import SupprimerCollection from './components/collection-supprimer.component';*/
 
-// A FAIRE: changer la couleur de la nav bar {{color : "#db504a"}}
+import CreationGroupe from './components/groupe-creation.component';
+import ListeGroupe from './components/groupe-liste.component';
+
 // A FAIRE: si admin voit pas la même chose
 
 function LiensDisponiblesQuandConnecte(props) {
   const pseudo = props.pseudo;
   console.log("pseudo =" + pseudo);
+  let url_profil ="/profil/";//A FAIRE Récupérer + membre._id;
+  let url_profil_maj ="/maj/profil/";//A FAIRE Récupérer + membre._id;
   if (pseudo) {
     return <Nav className="mr-auto">
-      <Nav.Link href="/">Accueil</Nav.Link>
-      <NavDropdown title={pseudo} id="basic-nav-dropdown">
-      <NavDropdown.Item href="/liste/membres" >Mon profil</NavDropdown.Item>
-      {/*A FAIRE si groupe personnel déjà créé alors tu vas sur mon groupe détails
-      Du groupe détail le membre pourra créer d'autres groupes*/}
-      <NavDropdown.Item href="/collection" >Ma collection de bds</NavDropdown.Item>
-      <NavDropdown.Item href="/groupe/creation" >Mes groupes</NavDropdown.Item>
+      <Nav.Link href="/liste/bede">Accueil</Nav.Link>
+
+      <NavDropdown title="Bandes Déssinées" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/ajout/bede" >Ajouter</NavDropdown.Item>
+        <NavDropdown.Item href="/liste/bede" >Liste</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/maj/bede/:id" >Mettre à Jour</NavDropdown.Item>*/}
+        {/*<NavDropdown.Item href="/suprimer/bede/:id" >Supprimer</NavDropdown.Item>*/}
       </NavDropdown>
 
-      <NavDropdown title="Liste" id="basic-nav-dropdown">
-        <NavDropdown.Item href="/liste/membres">Liste des membres</NavDropdown.Item>
-        <NavDropdown.Item href="/groupe/liste">Liste des groupes</NavDropdown.Item>
-        <NavDropdown.Item href="/allposts">A voir</NavDropdown.Item>
+      {/*<NavDropdown title="Votre Collection" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/ajout/collection" >Ajouter</NavDropdown.Item>
+        <NavDropdown.Item href="/detail/collection/:id" >Details</NavDropdown.Item>
+        <NavDropdown.Item href="/liste/collection" >Liste</NavDropdown.Item>
+        <NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>
+        <NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+      </NavDropdown>*/}
+
+
+      {/*<NavDropdown title="Groupes" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/creation/groupe" >Ajouter</NavDropdown.Item>
+        <NavDropdown.Item href="/detail/collection/:id" >Details</NavDropdown.Item>
+        <NavDropdown.Item href="/liste/groupe" >Liste</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>*/}
+        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
+        {/*<NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+      </NavDropdown>*/}
+
+      <NavDropdown title="Membres" id="basic-nav-dropdown">
+        {/*A FAIRE séparer les routes inscription de ajouter un membre*/}
+        <NavDropdown.Item href="/inscription" >Ajouter</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/detail/membres/:id" >Details</NavDropdown.Item>*/}
+        <NavDropdown.Item href="/liste/membres" >Liste</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/maj/membres" >Mettre à Jour</NavDropdown.Item>*/}
+        {/*A FAIRE ? séparer les routes supprimer membre de supprimer profil*/}
+        {/*<NavDropdown.Item href="/supprimer/:id/:pseudo" >Supprimer</NavDropdown.Item>*/}
+        {/*<NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
       </NavDropdown>
+
+      <NavDropdown title={pseudo} id="basic-nav-dropdown">
+        {/*<NavDropdown.Item href={url_profil} >Votre Profil</NavDropdown.Item>*/}
+        {/*<NavDropdown.Item href= {url_profil_maj} >Mettre à Jour</NavDropdown.Item>*/}
+        <NavDropdown.Item href="/supprimer/:id/:pseudo" >Supprimer</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>*/}
+        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
+        {/*<NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
+      </NavDropdown>
+
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>
   } else {
@@ -70,11 +114,11 @@ class App extends Component {
     super(props)
     this.setPseudo = this.setPseudo.bind(this);
     this.getPseudo = this.getPseudo.bind(this);
-    this.state = { pseudo: null,  cookies: new Cookies() }
+    this.state = { pseudo: null, cookies: new Cookies() }
     if (this.state.cookies.get('Session')) {
       this.state = { pseudo: this.state.cookies.get('Session') }
     }
-   
+
   }
   setPseudo(pseudo) {
     console.log("Vieux Pseudo :" + this.state.pseudo);
@@ -91,44 +135,53 @@ class App extends Component {
           <Navbar bg="primary" variant="dark" expand="lg">
             <Navbar.Brand href="/">CRAM</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav"/>
-              {/*A Faire ajouter le nom du membre connecté*/}
-              <div className="collpase navbar-callapse">
-               
-                    <LiensDisponiblesQuandConnecte pseudo={this.state.pseudo} />
-              </div>
-            </Navbar>
-            <br />
-            <h2>CRAM</h2>
-            {/* <Index/> */}
+            <Navbar.Collapse id="basic-navbar-nav" />
+            {/*A Faire ajouter le nom du membre connecté*/}
+            <div className="collpase navbar-callapse">
 
-            {/* Route pour la page d'accueil */}
-            {/* <Route path="/" exact component={Home} /> */}
-
-            {/* Routes pour les membres: */}
-            <Route path="/inscription" exact component={InscriptionMembre} /> 
-            <Route path="/connexion" render={(props) => <ConnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
-            <Route path="/deconnexion" render={(props) => <DeconnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
-            <Route path="/profil/:id" exact component={ProfilMembre} />
-            <Route path="/supprimer/:id/:pseudo" exact component={SupprimerMembre} />
-            <Route path="/validmaj/:id" component={ValidMajMembre} /> 
-            <Route path="/choixmaj/:id" component={ChoixMajMembre}/>
-            <Route path="/majmotdepasse/:id" component={MajMotDePasseMembre}/>
-            <Route path="/majemail/:id" component={MajEmailMembre}/>
-            <Route path="/majprofil/:id" component={MajMembre}/>
-            <Route path="/liste/membres" exact component={ListeMembres}/>
-
-            
-
-            {/* Routes pour les bedes */}
-            <Route path="/ajoutbede" exact component={AjoutBede} />
-            <Route path='/liste/bds' component={ListeBedes} />
-            <Route path="/bd/:id" component={DetailBede} />
-
-            <Route path="/groupe/creation" exact component={GroupeCreation} />
-            <Route path="/groupe/liste" exact component={GroupeListe} />
+              <LiensDisponiblesQuandConnecte pseudo={this.state.pseudo} />
             </div>
-          </Router>
+          </Navbar>
+          <br />
+          {/* <Index/> */}
+
+          {/* Route pour la page d'accueil */}
+          {/* <Route path="/" exact component={Home} /> */}
+
+          {/* Routes pour les membres: */}
+          <Route path="/inscription" exact component={InscriptionMembre} />
+          <Route path="/connexion" render={(props) => <ConnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
+          <Route path="/deconnexion" render={(props) => <DeconnexionMembre {...props} setPseudo={this.setPseudo} getPseudo={this.getPseudo} />} />
+          <Route path="/profil/:id" exact component={ProfilMembre} />
+
+          {/* A FAIRE séparer les routes membres des routes profils*/}
+          <Route path="/validmaj/:id" component={ValidMajMembre} />
+          <Route path="/choixmaj/:id" component={ChoixMajMembre} />
+          <Route path="/majmotdepasse/:id" component={MajMotDePasseMembre} />
+          <Route path="/majemail/:id" component={MajEmailMembre} />
+          <Route path="/maj/profil/:id" component={MajMembre} />
+          <Route path="/liste/membres" exact component={ListeMembres} />
+          <Route path="/supprimer/:id/:pseudo" exact component={SupprimerMembre} />
+
+          {/* Routes pour les bedes */}
+          <Route path="/ajout/bede" exact component={AjoutBede} />
+          <Route path="/liste/bede" component={ListeBedes} />
+          <Route path="/detail/bede/:id" component={DetailBede} />
+          {/* <Route path="/maj/bede/:id" component={MajBede} />*/}
+          {/* <Route path="/supprimer/bede/:id" component={SupprimerBede} />*/}
+
+          {/* Routes pour les collections */}
+         {/* <Route path="/ajout/collection" component={AjoutCollection} />
+          <Route path="/liste/collection" component={ListeCollection} />
+          <Route path="/detail/collection/:id" component={DetailCollection} 
+          <Route path="/maj/collection" component={MajCollection} />
+          <Route path="/suprimer/collection" component={SupprimerCollection} />*/}
+
+          {/* Routes pour les groupes */}
+          <Route path="/creation/groupe" exact component={CreationGroupe} />
+          <Route path="/liste/groupe" exact component={ListeGroupe} />
+        </div>
+      </Router>
     );
   }
 }

@@ -121,7 +121,7 @@ export default class GroupeCreation extends Component {
             this.state.err.push("Vous devez enregistrer des membres à votre groupe.");
             console.log(this.state.err);
         }*/
-        api.post('/groupe/creation', groupeACreer)
+        api.post('/groupe/creation/groupe', groupeACreer)
             // cet envoi permet d'enregistrer des nouveaux groupes
             .then(res => {
                 //réinitialiser le formulaire après soummission
@@ -142,7 +142,7 @@ export default class GroupeCreation extends Component {
 
     getListeMembres() {
         //A FAIRE essayer sans 'http://localhost:4242/'
-        let url = 'http://localhost:4242/membre/liste';
+        let url = 'http://localhost:4242/membre/liste/membres';
         api.get(url)
             .then(response => {
                 this.setState({ listeMembres: response.data });

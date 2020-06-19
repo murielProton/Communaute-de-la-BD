@@ -60,8 +60,9 @@ constructor(props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.listeMembres.map((membre) =>
-                                    <tr>
+                                {this.state.listeMembres.map((membre, i) =>
+                                //éviter l'erreur "each child in a list should have a unique key prop" alors en théorie si on veut une présentation toutes moche c'est bon.
+                                    <tr className={"row"} key={i}>
                                     //**nom** == item de la liste comme membre ou glace
                                         <td> {**nom**.champ1}</td>
                                         <td>{**nom**.champ2}</td>

@@ -101,7 +101,7 @@ export default class AjoutBede extends Component {
             && this.state.titre.length > 0
             && this.state.tome.length > 0) {
                 console.log('dans le if');
-                api.post('bede/ajout', nouvelleBede) // Cette requête permet d'ajouter la nouvelle bédé
+                api.post('bede/ajout/bede', nouvelleBede) // Cette requête permet d'ajouter la nouvelle bédé
                     .then(res => console.log(res.data));
                     console.log('après la requête dans le back');
                     console.log('Nouvelle bd: ', nouvelleBede);
@@ -138,6 +138,10 @@ export default class AjoutBede extends Component {
     }
 
     render() {
+        const redirection = this.state.redirection;
+        if (redirection === true) {
+            return <Redirect to="/liste/bede" />
+        }
         return(
             <div style={{marginTop: 20}}>
             <h3>Ajouter une nouvelle bande dessinée</h3>

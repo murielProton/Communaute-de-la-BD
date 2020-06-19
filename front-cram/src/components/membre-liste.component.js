@@ -10,7 +10,7 @@ export default class ListeMembres extends Component {
     }
     componentDidMount() {//Pour récupérer les données liste de la base de données, la méthode de cycle de vie componentDidMount est ajoutée:
         // axios.get('http://localhost:4242/membre/liste')
-        api.get('membre/liste')
+        api.get('membre/liste/membres')
             .then(response => {
                 this.setState({ membres: response.data });
                 console.log(response.data);

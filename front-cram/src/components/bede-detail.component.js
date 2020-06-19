@@ -12,23 +12,21 @@ export default class DetailBede extends Component {
         this.setState({ id: this.props.match.params.id });
         
         
-        api.get('bede/detail/'+this.props.match.params.id)
+        api.get('/bede/detail/bede/'+this.props.match.params.id)
             .then(response => {
                 console.log(response.data);
                 this.setState({ bedes: response.data });
-             
             })
             .catch(function (err) {
                 console.log(err);
             });
-    
         }
     //}
     render() {
         const { bedes } = this.state; 
         
         return (
-            <div class="container">
+            <div className="container">
                 <h3>Détail bande-dessinée </h3>
             {bedes.map(bede =>( 
             <div class="card-container">  
