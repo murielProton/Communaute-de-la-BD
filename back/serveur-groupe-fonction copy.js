@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-let Membre = require('./model_membre');
+let Groupe = require('./model_groupe');
 
 /* DEBUT des FONCTIONS UTILES MEMBERS--------------------------------------------------------------------*/
 //login entre 5 et 20 char
@@ -106,7 +106,6 @@ exports.generateurErreursInscription = async function generateurErreursInscripti
         err.push("Mot de passe incorrecte.");
         console.log("mot de passe différent de mot de passe confirmation.");
     }
-
     /*A FAIRE tester la date de naissance à date actuelle -120ans
     if (estLaDateNaissanceValide(req) == false ){
         err.push("Date de naissance impossible.");
@@ -120,7 +119,6 @@ exports.generateurErreursInscription = async function generateurErreursInscripti
     return err;
 }
 // Fonction qui converti les mots de passes en sha1
-
 exports.toSha1 = function toSha1(password) {
     // On crée notre Hasher avec l'algo qu'on veux
     var shasum = crypto.createHash('sha1');

@@ -1,0 +1,77 @@
+Pour lancer l'un et l'autre serveur ouvrir troix onglets du terminal
+le dernier dans back - à lancer d'abord - npm start
+l'un dans front-cram - npm start
+l'un à la racine de ce document mongo --port 27042
+nom de la db est CRAM
+
+dans le fichier serveur
+importer les fonctions (exemple : toSha1(password)) ainsi :
+funct.**nomFonction**(**variableSiYaBesoin**);
+funct.toSha1(password));
+
+
+REGEX - Email
+'^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$'
+
+Récupérer SESSION
+import Cookies from 'universal-cookie';
+//state cookies dans le constructeur
+constructor(props) {
+    super(props);
+    this.state = {
+        cookies: new Cookies(),
+    }
+    //puis n'importe où dans le code on peut utilister
+    this.state.cookies.get('Session')
+    //cela récupère cookies nommé session
+
+Récupérer une LISTE dans un component (liste ne venant pas de ce component mais d'un autre)
+//state LISTE dans le constructeur
+constructor(props) {
+    super(props);
+    this.state = {
+        **LISTE**: [],
+    }
+//componentDidMount permet de recharcher la liste à chaque fois qu'on vient sur cette page.
+    componentDidMount() {
+        //la fonction peut s'appeler tartanpion tant qu'elle porte un this. devant.
+        this.get**LISTE**();
+    }
+    //definir cette fonction tartanpion
+        get**LISTE**(){
+            //bien vérifier votre URL
+        let url = 'http://localhost:4242/membre/liste';
+        api.get(url)
+            .then(response => {
+                this.setState({**LISTE**: response.data});
+            }).catch(err => {
+                console.log(err);
+                this.setState({**LISTE**: [] });
+            });
+    }
+    render() {
+        return (
+            <table className="table table-striped" style={{ marginTop: 20 }} >
+                            <thead>
+                                <tr>
+                                    <th>champ1</th>
+                                    <th>champ2</th>
+                                    <th>champ3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.listeMembres.map((membre) =>
+                                    <tr>
+                                    //**nom** == item de la liste comme membre ou glace
+                                        <td> {**nom**.champ1}</td>
+                                        <td>{**nom**.champ2}</td>
+                                        <td>{**nom**.champ3}</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+        )}
+
+        Attention pour créer un Administarteur
+        Il fau aller dans le model_membre.js & dans le membre-inscripton.component.js pour changer la variable Admin à true.
+        La variable admin n'est pas setter dans le serveur.js 
