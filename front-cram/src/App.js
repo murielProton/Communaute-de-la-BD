@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom"; // Eu par npm
 import Cookies from 'universal-cookie'; // Eu par npm install universal-cookie
 import "bootstrap/dist/css/bootstrap.min.css"; // Eu par npm install bootstrap
 import './App.css';
-import Navbar from 'react-bootstrap/Navbar'; //Eu par npm install react-bootstrap bootstrap
+import Navbar, { NavbarText } from 'react-bootstrap/Navbar'; //Eu par npm install react-bootstrap bootstrap
 import NavDropdown from 'react-bootstrap/NavDropdown'; //Eu par npm install react-bootstrap bootstrap
 import Nav from 'react-bootstrap/Nav'; //Eu par npm install react-bootstrap bootstrap
 
@@ -41,9 +41,9 @@ function LiensDisponiblesQuandConnecte(props) {
   const pseudo = props.pseudo;
   const _id = props._id;
   const admin = props.admin;
-  console.log("pseudo =" + pseudo);
-  console.log("admin =" + admin);
-  console.log("_id =" + _id);
+  console.log("pseudo app.js props =" + pseudo);
+  console.log("admin app.js props=" + admin);
+  console.log("_id app.js props=" + _id);
   let url_profil = "/profil/";//A FAIRE Récupérer + membre._id;
   let url_profil_maj = "/maj/profil/";//A FAIRE Récupérer + membre._id;
   if (pseudo) {
@@ -53,32 +53,9 @@ function LiensDisponiblesQuandConnecte(props) {
       <NavDropdown title="Bandes Déssinées" id="basic-nav-dropdown">
         <NavDropdown.Item href="/ajout/bede" >Ajouter</NavDropdown.Item>
         <NavDropdown.Item href="/liste/bede" >Liste</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/maj/bede/:id" >Mettre à Jour</NavDropdown.Item>*/}
-        {/*<NavDropdown.Item href="/suprimer/bede/:id" >Supprimer</NavDropdown.Item>*/}
       </NavDropdown>
-
-      {/*<NavDropdown title="Votre Collection" id="basic-nav-dropdown">
-        <NavDropdown.Item href="/ajout/collection" >Ajouter</NavDropdown.Item>
-        <NavDropdown.Item href="/detail/collection/:id" >Details</NavDropdown.Item>
-        <NavDropdown.Item href="/liste/collection" >Liste</NavDropdown.Item>
-        <NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>
-        <NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown>*/}
-
-
-      {/*<NavDropdown title="Groupes" id="basic-nav-dropdown">
-        <NavDropdown.Item href="/creation/groupe" >Ajouter</NavDropdown.Item>
-        <NavDropdown.Item href="/detail/collection/:id" >Details</NavDropdown.Item>
-        <NavDropdown.Item href="/liste/groupe" >Liste</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>*/}
-      {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
-      {/*<NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown>*/}
-
-      <NavDropdown title="Membres" id="basic-nav-dropdown">
+{admin
+      ?<NavDropdown title="Administration" id="basic-nav-dropdown">
         {/*A FAIRE séparer les routes inscription de ajouter un membre*/}
         <NavDropdown.Item href="/inscription" >Ajouter</NavDropdown.Item>
         {/*<NavDropdown.Item href="/detail/membres/:id" >Details</NavDropdown.Item>*/}
@@ -89,7 +66,8 @@ function LiensDisponiblesQuandConnecte(props) {
         {/*<NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
       </NavDropdown>
-
+      :<div></div>
+}
       {/*<NavDropdown title={pseudo} id="basic-nav-dropdown">
         <NavDropdown.Item href={url_profil} >Votre Profil</NavDropdown.Item>
         <NavDropdown.Item href= {url_profil_maj} >Mettre à Jour</NavDropdown.Item>
@@ -99,7 +77,7 @@ function LiensDisponiblesQuandConnecte(props) {
         {/*<NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
       </NavDropdown>*/}
-      <div className="EcritureBlanche">{pseudo}</div>
+      <div className="EcritureBlanche nav-link">{pseudo}</div>
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>
   } else {
@@ -129,35 +107,38 @@ class App extends Component {
       cookies: new Cookies()
     }
     if (this.state.cookies.get('Session')) {
-      this.state = { pseudo: this.state.cookies.get('Session') }
+      this.state = { pseudo: this.state.cookies.get('Session'),
+      admin : this.state.cookies.get('Session_admin'),
+      _id : this.state.cookies.get('Session_id') }
     }
   }
   setPseudo(pseudo) {
     let cookie = new Cookies();
-    console.log("Vieux Pseudo :" + this.state.pseudo);
+    console.log("Vieux Pseudo app.js set Pseudo :" + this.state.pseudo);
     this.setState({ pseudo: pseudo,
       admin : cookie.get('Session_admin'),
       _id : cookie.get('Session_id')
     });
-    console.log("nouveau pseudo :" + this.state.pseudo);
-    console.log("nouveau admin :" + this.state.admin);
-    console.log("nouveau _id :" + this.state._id);
+    console.log("nouveau pseudo app.js set Pseudo:" + this.state.pseudo);
+    console.log("nouveau admin app.js  set Pseudo:" + this.state.admin);
+    console.log("nouveau _id app.js set Pseudo:" + this.state._id);
   }
   getPseudo() {
     return this.state.pseudo;
   }
   setAdmin(admin) {
-    console.log("Vieux Admin : " + this.state.admin);
+    console.log("Vieux Admin app.js set admin: " + this.state.admin);
     this.setState({ admin: admin });
-    console.log("nouveau admin" + this.state.admin);
+    console.log("nouveau admin app.js set admin" + this.state.admin);
   }
   getAdmin() {
+    console.log("Admin app.js get admin: " + this.state.admin);
     return this.state.admin;
   }
   set_id(_id) {
-    console.log("Vieux _id " + this.state._id)
+    console.log("Vieux _id app.js set _id" + this.state._id)
     this.setState({ _id: _id });
-    console.log("nouveau _id " + this.state._id)
+    console.log("nouveau _id app.js set _id" + this.state._id)
   }
   get_id() {
     return this.state._id;
@@ -175,7 +156,7 @@ class App extends Component {
             {/*A Faire ajouter le nom du membre connecté*/}
             <div className="collpase navbar-callapse">
 
-              <LiensDisponiblesQuandConnecte pseudo={this.state.pseudo} />
+              <LiensDisponiblesQuandConnecte pseudo={this.state.pseudo} admin={this.state.admin} _id={this.state._id} />
             </div>
           </Navbar>
           <br />

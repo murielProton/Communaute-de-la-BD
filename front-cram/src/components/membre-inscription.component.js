@@ -23,7 +23,8 @@ export default class InscriptionMembre extends Component {
             mot_de_passe_confirmation: "",
             date_de_naissance: "",
             ville: "",
-            admin: false, // Commenter cette ligne si on veut cérer un administrateur (à faire aussi dans le model membre du back et en ligne 119)
+            admin: false,
+             // Commenter cette ligne si on veut cérer un administrateur (à faire aussi dans le model membre du back et en ligne 119)
             mot_de_passe_correct: true,
             email_correct: true,
             membre_cree: false,

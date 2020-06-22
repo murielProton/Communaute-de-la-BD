@@ -32,6 +32,7 @@ let Membre = new Schema({
         type: String,
     },
 
+
     // avatar: {
     //     data: Buffer,
     //     Type: String,
