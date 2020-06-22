@@ -39,9 +39,13 @@ import ListeGroupe from './components/groupe-liste.component';
 
 function LiensDisponiblesQuandConnecte(props) {
   const pseudo = props.pseudo;
+  const _id = props._id;
+  const admin = props.admin;
   console.log("pseudo =" + pseudo);
-  let url_profil ="/profil/";//A FAIRE Récupérer + membre._id;
-  let url_profil_maj ="/maj/profil/";//A FAIRE Récupérer + membre._id;
+  console.log("admin =" + admin);
+  console.log("_id =" + _id);
+  let url_profil = "/profil/";//A FAIRE Récupérer + membre._id;
+  let url_profil_maj = "/maj/profil/";//A FAIRE Récupérer + membre._id;
   if (pseudo) {
     return <Nav className="mr-auto">
       <Nav.Link href="/liste/bede">Accueil</Nav.Link>
@@ -69,8 +73,8 @@ function LiensDisponiblesQuandConnecte(props) {
         <NavDropdown.Item href="/detail/collection/:id" >Details</NavDropdown.Item>
         <NavDropdown.Item href="/liste/groupe" >Liste</NavDropdown.Item>
         {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>*/}
-        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
-        {/*<NavDropdown.Divider />
+      {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
+      {/*<NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
       </NavDropdown>*/}
 
@@ -114,20 +118,52 @@ class App extends Component {
     super(props)
     this.setPseudo = this.setPseudo.bind(this);
     this.getPseudo = this.getPseudo.bind(this);
-    this.state = { pseudo: null, cookies: new Cookies() }
+    this.setAdmin = this.setAdmin.bind(this);
+    this.getAdmin = this.getAdmin.bind(this);
+    this.set_id = this.set_id.bind(this);
+    this.get_id = this.get_id.bind(this);
+    this.state = {
+      pseudo: null,
+      admin: null,
+      _id: null,
+      cookies: new Cookies()
+    }
     if (this.state.cookies.get('Session')) {
       this.state = { pseudo: this.state.cookies.get('Session') }
     }
-
   }
   setPseudo(pseudo) {
+    let cookie = new Cookies();
     console.log("Vieux Pseudo :" + this.state.pseudo);
-    this.setState({ pseudo: pseudo });
+    this.setState({ pseudo: pseudo,
+      admin : cookie.get('Session_admin'),
+      _id : cookie.get('Session_id')
+    });
     console.log("nouveau pseudo :" + this.state.pseudo);
+    console.log("nouveau admin :" + this.state.admin);
+    console.log("nouveau _id :" + this.state._id);
   }
   getPseudo() {
     return this.state.pseudo;
   }
+  setAdmin(admin) {
+    console.log("Vieux Admin : " + this.state.admin);
+    this.setState({ admin: admin });
+    console.log("nouveau admin" + this.state.admin);
+  }
+  getAdmin() {
+    return this.state.admin;
+  }
+  set_id(_id) {
+    console.log("Vieux _id " + this.state._id)
+    this.setState({ _id: _id });
+    console.log("nouveau _id " + this.state._id)
+  }
+  get_id() {
+    return this.state._id;
+  }
+
+
   render() {
     return (
       <Router>
@@ -171,7 +207,7 @@ class App extends Component {
           {/* <Route path="/supprimer/bede/:id" component={SupprimerBede} />*/}
 
           {/* Routes pour les collections */}
-         {/* <Route path="/ajout/collection" component={AjoutCollection} />
+          {/* <Route path="/ajout/collection" component={AjoutCollection} />
           <Route path="/liste/collection" component={ListeCollection} />
           <Route path="/detail/collection/:id" component={DetailCollection} 
           <Route path="/maj/collection" component={MajCollection} />

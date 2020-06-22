@@ -10,6 +10,9 @@ export default class Deconnection extends Component {
         const cookies = new Cookies();
 
         cookies.remove('Session');
+        cookies.remove('Session_Admin');
+        cookies.remove('Session_id');
+        cookies.remove('Session_membre');
         console.log("deconnection");
         this.props.setPseudo(null);
     }

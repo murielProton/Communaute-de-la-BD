@@ -111,7 +111,8 @@ membre_routes.route('/membre/connexion').post(async function (req, res) {
         console.log("membre.mot_de_passe" + membre.mot_de_passe);
         console.log("req.body.mot_de_passe" + toSha1(req.body.mot_de_passe));
         if (membre.mot_de_passe == toSha1(req.body.mot_de_passe)) { //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
-            res.status(200).send("Pseudo et mot de passe corrects !!");
+       //il faut envoyer le membre en front pour récupérer tous ce qu'il peut contenir (_id, pseudo, admin ...)
+        res.status(200).json({'membre': membre});
             console.log("Connexion réussie !");
         }
         else {

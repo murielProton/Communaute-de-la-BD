@@ -20,7 +20,7 @@ export default class ConnexionMembre extends Component {
             type: false,
             connection_fail: false,
             redirection: false,
-            cookies: new Cookies()
+            cookies: new Cookies(),
         }
     }
 
@@ -40,8 +40,6 @@ export default class ConnexionMembre extends Component {
         e.preventDefault(); // to prevent default submit behaviour
 
         console.log("Form submitted:");
-        console.log('pseudo: ', this.state.pseudo);
-        console.log('mot de passe: ', this.state.mot_de_passe);
 
         const Membre ={
             pseudo: this.state.pseudo,
@@ -51,14 +49,21 @@ export default class ConnexionMembre extends Component {
         // axios.post('http://localhost:4242/membre/connexion', Membre)
         api.post('membre/connexion', Membre)
             .then(res => {
-                console.log(res.data);
+                let membreConnecte = res.data.membre;
+                console.log(membreConnecte);
                 console.log("Connexion réussie !!");
-                this.state.cookies.set('Session', this.state.pseudo, {path: '/', maxAge: 86400, sameSite:'Strict'}); // Le cookie a une vie de 24h (86400 secondes)
-                console.log("cookie", this.state.cookies.get('Session'));
-                // LoginProfile.setName(this.state.login);
-                // localStorage.setItem('username', this.state.login);
+                 // Le cookie a une vie de 24h (86400 secondes)
+
+                let dureeVieCookie= {path: '/', maxAge: 86400, sameSite:'Strict'};
+
+                this.state.cookies.set('Session', membreConnecte.pseudo, dureeVieCookie);
+                this.state.cookies.set('Session_id', membreConnecte._id, dureeVieCookie);
+                this.state.cookies.set('Session_admin', membreConnecte.admin, dureeVieCookie);
+                this.state.cookies.set('Session_membre', membreConnecte, dureeVieCookie);
                 this.setState({ redirection: true });
-                this.props.setPseudo(this.state.pseudo); // Permet de récupérer dans les autres fichiers ce que l'on mets dans le constructeur
+                // On affecte ce qu'il faut pour la partie App
+                this.props.setPseudo(this.state.pseudo);
+    
             })
             .catch(err => {
                 console.log(err);   
@@ -68,11 +73,10 @@ export default class ConnexionMembre extends Component {
     }
 
     render() {
-        // const { redirection } = this.state;
-        // if (redirection) {
-        //  //Redirect to the page
-        //  return <Redirect to={`/a/${localStorage.getItem('username')}`}/>;
-        // }
+        const redirection = this.state.redirection;
+               if (redirection==true) {
+          return <Redirect to="/liste/bede" />
+         }
         return(
             <div style={{marginTop: 20}}>
                 <h3>Connexion</h3>
@@ -95,9 +99,6 @@ export default class ConnexionMembre extends Component {
                                 onChange={this.onChangeMotDePasse}
                                 />
                     </div>
-                    {this.state.connection_fail === true &&
-                        <p style={{color: "red"}}>Pseudonyme ou mot de passe incorrect !</p>
-                        }
                     <div className="form-group">
                         <input type="submit" value="Connexion" className="btn btn-primary" />
                     </div>
