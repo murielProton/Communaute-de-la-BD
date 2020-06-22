@@ -164,14 +164,14 @@ export default class GroupeCreation extends Component {
                         <h4>{item}</h4>
                     )}
                     <div className="form-group">
-                        <label><h4>Nom du groupe:</h4> </label>
+                        <label><h4>*Nom du groupe:</h4> </label>
                         <input type="text"
                             className="form-control"
                             placeholder="Choisissez le nom de votre groupe."
                             value={this.state.nom_groupe}
                             onChange={this.onChangeNom_groupe}
                         />
-                        <div><h4>Privé</h4>
+                        <div><h4>*Privé</h4>
           Décochez la case si vous voulez un groupe privé.
           <p>Toutes vos conversations seront ainsi marqués comme tel.</p></div>
                         <label>

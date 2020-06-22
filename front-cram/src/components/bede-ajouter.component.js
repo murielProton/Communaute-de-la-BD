@@ -147,7 +147,7 @@ export default class AjoutBede extends Component {
             <h3>Ajouter une nouvelle bande dessinée</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Série: </label>
+                        <label>*Série: </label>
                         <input  type="text"
                                 className="form-control"
                                 placeholder="Nom de la série"
@@ -159,7 +159,7 @@ export default class AjoutBede extends Component {
                         }
                     </div>
                     <div className="form-group">
-                        <label>Titre: </label>
+                        <label>*Titre: </label>
                         <input  type="text"
                                 className="form-control"
                                 placeholder="Titre du tome"
@@ -171,7 +171,7 @@ export default class AjoutBede extends Component {
                         }
                     </div>
                     <div className="form-group">
-                        <label>Tome: </label>
+                        <label>*Tome: </label>
                         <input  type="number"
                                 // className="form-control"
                                 min="0"

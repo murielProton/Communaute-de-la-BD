@@ -86,16 +86,16 @@ function LiensDisponiblesQuandConnecte(props) {
         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
       </NavDropdown>
 
-      <NavDropdown title={pseudo} id="basic-nav-dropdown">
-        {/*<NavDropdown.Item href={url_profil} >Votre Profil</NavDropdown.Item>*/}
-        {/*<NavDropdown.Item href= {url_profil_maj} >Mettre à Jour</NavDropdown.Item>*/}
+      {/*<NavDropdown title={pseudo} id="basic-nav-dropdown">
+        <NavDropdown.Item href={url_profil} >Votre Profil</NavDropdown.Item>
+        <NavDropdown.Item href= {url_profil_maj} >Mettre à Jour</NavDropdown.Item>
         <NavDropdown.Item href="/supprimer/:id/:pseudo" >Supprimer</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>*/}
-        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>*/}
+        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>
+        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>
         {/*<NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
-      </NavDropdown>
-
+        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+      </NavDropdown>*/}
+      <div className="EcritureBlanche">{pseudo}</div>
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>
   } else {
@@ -131,9 +131,9 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="container EcritureRouge">
+        <div className="container EcritureNoire">
           <Navbar bg="primary" variant="dark" expand="lg">
-            <Navbar.Brand href="/">CRAM</Navbar.Brand>
+            <Navbar.Brand href="/liste/bede">CRAM</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" />
             {/*A Faire ajouter le nom du membre connecté*/}

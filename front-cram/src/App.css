@@ -37,10 +37,18 @@
   }
 }
 
-.EcritureRouge{
+.EcritureNoire{
   color: #37323e;
 }
 
 .bg-primary {
   background-color:#db504a!important
  }
+
+.EcritureBlanche{
+  color:#F7F9F9!important;
+}
+
+.nav-link:hover {
+  color:#F7F9F9!important;
+}

@@ -144,7 +144,7 @@ export default class InscriptionMembre extends Component {
     render() {
         const redirection = this.state.redirection;
         if (redirection === true) {
-            return <Redirect to="/liste/bede" />
+            return <Redirect to="/connexion" />
         }
         return (
             <div style={{ marginTop: 20 }}>
