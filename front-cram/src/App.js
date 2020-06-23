@@ -38,8 +38,7 @@ import ListeGroupe from './components/groupe-liste.component';
 
 function LiensAdmin(props) {
   let admin = props.admin;
-  console.log("liensAdmin admin ");
-  console.log(admin);
+  console.log("je suis dans app.js Liens Admin");
   if (admin) {
     return <div className="Admin">
       <NavDropdown title="Administration" id="basic-nav-dropdown">
@@ -56,10 +55,7 @@ function LiensDisponiblesQuandConnecte(props) {
   let pseudo = props.pseudo;
   let admin = props.admin;
   let membre_id = props._id;
-  console.log("pseudo app.js props pseudo =" + props.pseudo);
-  console.log("admin app.js props admin =");
-  console.log(props.admin);
-  console.log("_id app.js props _id=" + props._id);
+  console.log("Je suis dans app.js Liens Disponibles quand on se connecte.");
   let url_profil = "/profil/";//A FAIRE Récupérer + membre._id;
   let url_profil_maj = "/maj/profil/";//A FAIRE Récupérer + membre._id;
   if (props.pseudo) {
@@ -105,10 +101,9 @@ class App extends Component {
     this.setPseudo(cookie.get('Session'));
   }
   setPseudo(pseudo) {
+    console.log("je suis dans l'app.js setPseudo");
     let cookie = new Cookies();
-    console.log("Vieux Pseudo app.js set Pseudo :" + this.state.pseudo);
     this.setState({ pseudo: pseudo });
-    console.log("nouveau pseudo app.js set Pseudo:" + this.state.pseudo);
     // ATTENTION les cookies sont des string, les boolean sont envoyés en string
     this.setAdmin(cookie.get('Session_admin') == 'true');
     this.setId(cookie.get('Session_id'));
@@ -118,17 +113,13 @@ class App extends Component {
     return this.state.pseudo;
   }
   setAdmin(admin) {
-    console.log("Vieux Admin app.js set admin: "+this.state.admin);
     this.setState({ admin: admin });
-    console.log("NEW Admin app.js get admin: "+this.state.admin);
   }
   setId(_id) {
     this.setState({ _id: _id });
   }
 
   render() {
-    console.log("ADMIN RENDITION =>");
-    console.log(this.state.admin);//en premier c'est le boolean true puis il passe à la string ??? why ?!
     return (
       <Router>
         <div className="container EcritureNoire">
