@@ -70,7 +70,7 @@ membre_routes.route('/membre/pseudo').post(function (req, res) {
 
 // Enregistre le nouveau membre dans la base de donnée
 
-membre_routes.route('/membre/inscription').post(async function(req, res){ 
+membre_routes.route('/membre/inscription').post(async function (req, res) {
 
 
     console.log("Dans création utilisateur");
@@ -88,7 +88,7 @@ membre_routes.route('/membre/inscription').post(async function(req, res){
         membre.save()
             .then(membre => {
 
-                res.status(200).json({'membre': 'Nouveau membre ajouté !!'});
+                res.status(200).json({ 'membre': 'Nouveau membre ajouté !!' });
             })
             .catch(err => {
                 res.status(403).send("Echec ajout nouveau membre (in else)");
@@ -97,6 +97,7 @@ membre_routes.route('/membre/inscription').post(async function(req, res){
     }
 
 });
+
 // Permet à l'utilisateur de se connecter
 membre_routes.route('/membre/connexion').post(async function (req, res) {
     console.log("Dans connexion de l'utilisateur");
@@ -111,8 +112,8 @@ membre_routes.route('/membre/connexion').post(async function (req, res) {
         console.log("membre.mot_de_passe" + membre.mot_de_passe);
         console.log("req.body.mot_de_passe" + toSha1(req.body.mot_de_passe));
         if (membre.mot_de_passe == toSha1(req.body.mot_de_passe)) { //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
-       //il faut envoyer le membre en front pour récupérer tous ce qu'il peut contenir (_id, pseudo, admin ...)
-        res.status(200).json({'membre': membre});
+            //il faut envoyer le membre en front pour récupérer tous ce qu'il peut contenir (_id, pseudo, admin ...)
+            res.status(200).json({ 'membre': membre });
             console.log("Connexion réussie !");
         }
         else {
@@ -140,104 +141,104 @@ membre_routes.route('/membre/profil/:id').get(function (req, res) {
     console.log("Dans la route afficher mon profil");
     console.log(id);
     Membre.find({ _id: id }).populate('groupes')
-    .then(resultat=>{
-        res.json(resultat)
-        console.log("mes resultats",resultat);
-    })
-    .catch((err)=>{
-        console.log("err:",err);
-        res.status(403).json(err)
-    });
- }); 
- 
- // Supprime totalement le profil d'un membre dans la base de donnée
- membre_routes.route('/membre/supprimer/:id/:pseudo').get(function(req, res){ 
-       Membre.findByIdAndDelete(req.params.id , function(err, membre){
-       console.log(req.params.id)
-       console.log('Dans la route supprimer membre.')
-            if(!membre) {
-                res.status(403).send("membre non trouve");
-                console.log("membre non trouvé");
-            }  else {
-                res.status(200).send("Membre supprime");
+        .then(resultat => {
+            res.json(resultat)
+            console.log("mes resultats", resultat);
+        })
+        .catch((err) => {
+            console.log("err:", err);
+            res.status(403).json(err)
+        });
+});
+
+// Supprime totalement le profil d'un membre dans la base de donnée
+membre_routes.route('/membre/supprimer/:id/:pseudo').get(function (req, res) {
+    Membre.findByIdAndDelete(req.params.id, function (err, membre) {
+        console.log(req.params.id)
+        console.log('Dans la route supprimer membre.')
+        if (!membre) {
+            res.status(403).send("membre non trouve");
+            console.log("membre non trouvé");
+        } else {
+            res.status(200).send("Membre supprime");
             console.log("Membre supprime");
         }
     })
 });
 
 //Se Connecter pour acceder à la page de modification
-membre_routes.route('/membre/validmaj/:id').post(function(req, res){
-    
+membre_routes.route('/membre/validmaj/:id').post(function (req, res) {
+
     console.log("Dans mise à jour de l'utilisateur");
-    Membre.find({ pseudo: req.body.pseudo }, function(err, membres){
+    Membre.find({ pseudo: req.body.pseudo }, function (err, membres) {
         console.log("Dans ma mise à jour après la recherche");
-        if(membres.lenght == 0){ //Si la longeur de vaut zéro, c'est que le pseudo n'existe pas dans la base de données
+        if (membres.lenght == 0) { //Si la longeur de vaut zéro, c'est que le pseudo n'existe pas dans la base de données
             console.log("Dans le if: pas de membre pour le pseudo");
             res.status(403).send("Pseudo ou mot de passe incorrect pour modifier");
         }
-        else{
+        else {
             membre = membres[0]; // Nous permet de récupérer le premier membre trouvé
-            if(membre.mot_de_passe == toSha1(req.body.mot_de_passe)){ //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
+            if (membre.mot_de_passe == toSha1(req.body.mot_de_passe)) { //On hache le mot de passe donné lors de la connexion pour savoir s'il correspond à celui de la base de donnée (qui est déjà haché)
                 res.status(200).send("Pseudo et mot de passe corrects !!");
                 console.log("Connexion à la page choix réussie !");
             }
-            else{
+            else {
                 console.log("Dans le else, mot de passe incorrect");
                 res.status(403).send("Pseudo ou mot de passe incorrect pour modifier");
             }
         }
     });
-}); 
+});
 
 // Met à jour le mot de passe d'un membre dans la base de donnée
-membre_routes.route('/membre/majmotdepasse/:id').post(function(req, res){ 
-    Membre.findById(req.params.id,function(err,membre){
+membre_routes.route('/membre/majmotdepasse/:id').post(function (req, res) {
+    Membre.findById(req.params.id, function (err, membre) {
         console.log(req.params.id)
-        if (membre){
+        if (membre) {
             console.log('je modifie mon compte')
-            membre.mot_de_passe=toSha1(req.body.mot_de_passe)
+            membre.mot_de_passe = toSha1(req.body.mot_de_passe)
             membre.save()
-            .then(membre => {
-                res.status(200).json({'membre': 'Compte membre modifié avec succes'});
-            })
-            
-            .catch(err => {
-                res.status(403).send('la mise à jour du membre a échoué');
-            });
+                .then(membre => {
+                    res.status(200).json({ 'membre': 'Compte membre modifié avec succes' });
+                })
+
+                .catch(err => {
+                    res.status(403).send('la mise à jour du membre a échoué');
+                });
             //   }
         }
-        else{
+        else {
             res.status(403).send("aucun résultats trouvé");
         }
     })
 });
 
 // Recherche des paramètres d'un membre pour préremplir le formulaire de mise à jour du profil
-membre_routes.route('/membre/avoirmaj/:id').get(function(req, res){ 
+membre_routes.route('/membre/avoirmaj/:id').get(function (req, res) {
     console.log("recherche les params d'un membre par son id")
-    Membre.findById(req.params.id,function(err,membre){
+    Membre.findById(req.params.id, function (err, membre) {
         res.json(membre);
     });
 });
 
 // Met à jour l'email d'un membre dans la base de donnée
-membre_routes.route('/membre/majemail/:id').post(function(req, res){ 
-    Membre.findById(req.params.id,function(err,membre){
+membre_routes.route('/membre/majemail/:id').post(function (req, res) {
+    Membre.findById(req.params.id, function (err, membre) {
         console.log(req.params.id)
-        if (membre){
+        if (membre) {
             console.log('je modifie mon compte')
-            membre.email=req.body.email
+            membre.email = req.body.email
             membre.save()
-            .then(membre => {
-                res.status(200).json({'membre': 'Compte membre modifié avec succes'});
-            })
-            
-            .catch(err => {
-                res.status(403).send('la mise à jour du membre a échoué');
-            });
+                .then(membre => {
+                    res.status(200).json({ 'membre': 'Compte membre modifié avec succes' });
+                })
+
+                .catch(err => {
+                    res.status(403).send('la mise à jour du membre a échoué');
+                });
             //   }
         }
-        else{
+        else {
             res.status(403).send("aucun résultats trouvé");
         }
     })
@@ -266,46 +267,46 @@ membre_routes.route('/membre/majemail/:id').post(function(req, res){
 //     });
 
 // Met à jour le profil d'un membre dans la base de donnée
-membre_routes.route('/membre/maj/profil/:id').post(function(req, res){ 
-    Membre.findById(req.params.id,function(err,membre){
-        if (membre){
+membre_routes.route('/membre/maj/profil/:id').post(function (req, res) {
+    Membre.findById(req.params.id, function (err, membre) {
+        if (membre) {
             console.log('je modifie mon compte')
-            
-            membre.ville=req.body.ville
-            membre.date_de_naissance=req.body.date_de_naissance
-            membre.save()
-            .then(membre => {
-                res.status(200).json({'membre': 'Compte membre modifié avec succes'});
-            })
 
-            .catch(err => {
-                res.status(403).send('la mise à jour du membre a échoué');
-            });
+            membre.ville = req.body.ville
+            membre.date_de_naissance = req.body.date_de_naissance
+            membre.save()
+                .then(membre => {
+                    res.status(200).json({ 'membre': 'Compte membre modifié avec succes' });
+                })
+
+                .catch(err => {
+                    res.status(403).send('la mise à jour du membre a échoué');
+                });
             //   }
         }
-        else{
+        else {
             res.status(403).send("aucun résultats trouvé");
         }
     })
-});   
+});
 
 //Routes collection------------------------------------------------------------------------------------------------------------------------------------------
 
 // Crée la collection du membre (se fait lors de l'incription du nouveau membre)
-collection_routes.route('/collection/ajout/collection').post(function(req, res){
+collection_routes.route('/collection/ajout/collection').post(function (req, res) {
     console.log('Dans création collection');
     console.log('req.params.pseudo: ', req.body.pseudo);
     let collection = new Collection(req.body)
     console.log('collection: ', collection);
 
     collection.save()
-                .then(membre => {
-                    res.status(200).json({'collection': 'Nouvelle collection créee'});
-                })
-                .catch(err => {
-                    res.status(403).send("Echec lors de la création de la collection");
-                    console.log(err);
-                });
+        .then(membre => {
+            res.status(200).json({ 'collection': 'Nouvelle collection créee' });
+        })
+        .catch(err => {
+            res.status(403).send("Echec lors de la création de la collection");
+            console.log(err);
+        });
 
 });
 
@@ -313,7 +314,7 @@ collection_routes.route('/collection/ajout/collection').post(function(req, res){
 //Routes bede------------------------------------------------------------------------------------------------------------------------------------------
 
 // Enregistre la nouvelle bédé dans la base de donnée 
-bede_routes.route('/bede/ajout/bede').post(function(req, res){ 
+bede_routes.route('/bede/ajout/bede').post(function (req, res) {
 
     console.log("Dans ajout bédé");
     console.log("req.body", req.body);
@@ -321,7 +322,7 @@ bede_routes.route('/bede/ajout/bede').post(function(req, res){
 
     bede.save()
         .then(bede => {
-            res.status(200).json({'bédé': 'Nouvelle bédé ajoutée !!'});
+            res.status(200).json({ 'bédé': 'Nouvelle bédé ajoutée !!' });
         })
         .catch(err => {
             res.status(403).send("Echec ajout nouvelle bédé (in else)");
@@ -330,8 +331,8 @@ bede_routes.route('/bede/ajout/bede').post(function(req, res){
 });
 
 // Affiche la liste des bande-dessinées de la base de donnée
-bede_routes.route('/bede/liste/bede').get(function(req, res){ 
-    Bede.find(function(err, bedes) {
+bede_routes.route('/bede/liste/bede').get(function (req, res) {
+    Bede.find(function (err, bedes) {
         if (err) {
             console.log(err);
         } else {
@@ -341,20 +342,20 @@ bede_routes.route('/bede/liste/bede').get(function(req, res){
 });
 
 // Affiche le détail d'une bande-dessinée
-bede_routes.route('/bede/detail/bede/:id').get(function(req, res){ 
+bede_routes.route('/bede/detail/bede/:id').get(function (req, res) {
     let id = req.params.id;
     console.log("Dans la route afficher le détail de la bande-dessinée");
     console.log(id);
     Bede.find({ _id: id }).populate('Avis')
-    .then(resultat=>{
-        res.json(resultat)
-        console.log("Resultats: ",resultat);
-    })
-    .catch((err)=>{
-        console.log("err:",err);
-        res.status(403).json(err)
-    });
- }); 
+        .then(resultat => {
+            res.json(resultat)
+            console.log("Resultats: ", resultat);
+        })
+        .catch((err) => {
+            console.log("err:", err);
+            res.status(403).json(err)
+        });
+});
 
 //Routes avis------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -368,11 +369,8 @@ groupe_routes.route('/groupe/creation/groupe').post(async function (req, res, me
     console.log("je suis dans groupe création.");
     let groupe = new Groupe(req.body);
     //Adaptation à faire pour récupérer le liste des mebres en objectId à la place des login
-    liste_membre_groupe_object_id = await functG.transformerListePseudoEnListe_id(req.body.membre_groupe_pseudonymes);
-    groupe.membres_groupe = liste_membre_groupe_object_id;
-    console.log("groupe_routes.route req body nom groupe "+req.body.nom_groupe);
-    liste_groupe_object_id = await functG.transformerListeGroupeNomEnListe_id(req.body.nom_groupe);
-    groupe.membres_groupe = liste_groupe_object_id;
+    groupe.membres_groupe = await functG.transformerListePseudoEnListe_id(req.body.membre_groupe_pseudonymes);
+    console.log("groupe_routes.route req body nom groupe " + req.body.membre_groupe_pseudonymes);
     let err = []
     //gestion des erreurs
     //let err = await functG.generateurErreursGroupeCreation(req, member);
@@ -381,26 +379,25 @@ groupe_routes.route('/groupe/creation/groupe').post(async function (req, res, me
         res.status(403).json({ 'err': err })
         return;
     } else {
-        groupe.admin_groupe = Membre.pseudo;
-        groupe.date_c_g = Date.now();
         groupe.save()
-            .then(async groupe => {
-
+            .then(result => {
                 //attention erreur ici !!!
-                for (let index = 0; index < liste_membre_groupe_object_id.length; index++) {
-                    let pseudoMembre = liste_membre_groupe_object_id[index];
-                    let membre = await Membre.findOne({ pseudo: pseudoMembre }).populate();
-                    membre.groupes.push(liste_groupe_object_id);
-                    membre.save();
+                for (let index = 0; index < groupe.membres_groupe.length; index++) {
+                    let pseudoMembre = groupe.membres_groupe[index];
+                    Membre.findById(pseudoMembre, (err, membre) => {
+                        console.log("je suis dans goupe création tant que il y a des id dans membre groupe.")
+                        membre.groupes.push(groupe.id);
+                        membre.save();
+                    });
                 }
-                res.status(200).json({'status': "OK", 'groupe': 'groupe ajouté avec succès' });
+                res.status(200).json({ 'status': "OK", 'groupe': 'groupe ajouté avec succès' });
                 //attention les redirects ne se font pas du côté server mais du côté component !!!! reférence create-memeber.component
             })
             .catch(err => {
                 console.log("serveur Groupe Création err = " + err + err.length);
                 res.status(403).send({ 'err': ["Erreur Technique"] });
             });
-        }
+    }
 });
 // Affiche la liste des groupes dans la base de donnée
 groupe_routes.route('groupe/liste/groupe').get(async function (req, res) {

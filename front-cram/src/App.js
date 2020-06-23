@@ -66,7 +66,13 @@ function LiensDisponiblesQuandConnecte(props) {
         <NavDropdown.Item href="/ajout/bede" >Ajouter</NavDropdown.Item>
         <NavDropdown.Item href="/liste/bede" >Liste</NavDropdown.Item>
       </NavDropdown>
+
+      <NavDropdown title="Groupes" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/creation/groupe" >Créer</NavDropdown.Item>
+      </NavDropdown>
+
       <LiensAdmin pseudo={props.pseudo} admin={props.admin} _id={props._id} />
+
       <div className="EcritureBlanche nav-link">{pseudo}</div>
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>

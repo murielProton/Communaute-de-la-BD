@@ -24,12 +24,13 @@ export default class GroupeCreation extends Component {
             prive: true,
             date_c_g: "",
             membres_groupe: [],
-            redirect: false,
+            redirection: false,
             cookies: new Cookies(),
             listeMembres: [],
             checkedMembres: new Map(),
             err: []
         }
+
     }
 
     //componentDidMount permet de recharcher la liste à chaque fois qu'on vient sur cette page.
@@ -78,14 +79,14 @@ export default class GroupeCreation extends Component {
             return;
         }
         let admin_groupe = this.state.cookies.get('Session');
-        let date_c_g = new Date();
+        //let date_c_g = new Date();
         /* fonction array membre group */
         let membres = [];
         //membres.push(admin_groupe);
         for (const entry of this.state.checkedMembres.entries()) {
             let pseudo = entry[0];
             let selectionne = entry[1];
-            if(selectionne){
+            if (selectionne) {
                 membres.push(pseudo);
             }
         }
@@ -94,33 +95,12 @@ export default class GroupeCreation extends Component {
             nom_groupe: this.state.nom_groupe,
             admin_groupe: admin_groupe,
             prive: this.state.prive,
-            date_c_g: date_c_g,
+            date_c_g: Date.now,
             membre_groupe_pseudonymes: membres
         };
         //axios l'application ne connait pas
         // api.post('http://localhost:4242/groupe/creation', pseudoMembre)
-        if (this.state.nom_groupe == "" || this.state.nom_groupe == null) {
-            this.state.err.push("Vous devez donner un nom à votre groupe de discussion.");
-            console.log(this.state.err);
-        }
-        if (this.state.nom_groupe.length>37||this.state.nom_groupe.length<2){
-            this.state.err.push("Le nom de votre groupe doit comprendre entre 1 et 37 charactères.");
-            console.log(this.state.err);
-        }
-        if (this.state.prive == "" || this.state.prive == null) {
-            this.state.err.push("Vous devez donner une sécurité à votre groupe : privé ou public.");
-            console.log(this.state.err);
-        }
-        if (this.state.date_c_g != new Date()) {
-            //attention erreur malveillante
-            this.state.err.push("Erreur Technique sur la page création de groupe.");
-            console.log("La date n'est pas correcte.");
-        }
-        /*TODO
-        if (this.state.membre_groupe_pseudonymes.length<1){
-            this.state.err.push("Vous devez enregistrer des membres à votre groupe.");
-            console.log(this.state.err);
-        }*/
+        //A FAIRE Sécurités groupe création
         api.post('/groupe/creation/groupe', groupeACreer)
             // cet envoi permet d'enregistrer des nouveaux groupes
             .then(res => {
@@ -132,7 +112,7 @@ export default class GroupeCreation extends Component {
                     date_c_g: "",
                     //pour afficher les membres_groupe avec les _id : pseudo il faudra utiliser le populate + map dans map
                     membres_groupe: [],
-                    redirect: true,
+                    redirection: true,
                     err: []
                 });
             }).catch(err => {
@@ -152,10 +132,9 @@ export default class GroupeCreation extends Component {
             });
     }
     render() {
-        // if (This.state.redirection) {
-        //  //Redirect to the page
-        //  return <Redirect to="/groupe/listePersonelle"/>;
-        // }
+        if (this.state.redirection) {
+            return <Redirect to="/groupe/listePersonelle" />;
+        }
         return (
             <div style={{ marginTop: 20 }}>
                 <h3>Création d'un groupe de conversation</h3>
@@ -172,7 +151,7 @@ export default class GroupeCreation extends Component {
                             onChange={this.onChangeNom_groupe}
                         />
                         <div><h4>*Privé</h4>
-          Décochez la case si vous voulez un groupe privé.
+          Décochez la case si vous voulez un groupe public.
           <p>Toutes vos conversations seront ainsi marqués comme tel.</p></div>
                         <label>
                             privé
@@ -182,19 +161,19 @@ export default class GroupeCreation extends Component {
                                 onChange={this.handleChangePrive} />
                         </label>
                     </div>
-                    <div>
-                        <h3>Choisissez vos membres parmi la liste des membres du site</h3>
-                        <p>Attentions pensez à vous ajoutez, car ce n'est pas fait automatiquement.</p>
+                    <div><h4>*Membres du groupe:</h4>
+                        <p>Choisissez vos membres parmi la liste des membres du site</p>
+                        <p>Attention pensez à vous ajoutez, car ce n'est pas fait automatiquement.</p>
                         <React.Fragment>
                             {this.state.listeMembres.map((membre) =>
-                            <div>
-                                <label key={membre.key}>
-                                    {membre.pseudo}
-                                    <Checkbox name={membre.pseudo}
-                                        checked={this.state.checkedMembres.get(membre.pseudo)}
-                                        onChange={this.handleChangeMembresGroupe} />
-                                </label>
-                            </div>)
+                                <div>
+                                    <label key={membre.key}>
+                                        {membre.pseudo}
+                                        <Checkbox name={membre.pseudo}
+                                            checked={this.state.checkedMembres.get(membre.pseudo)}
+                                            onChange={this.handleChangeMembresGroupe} />
+                                    </label>
+                                </div>)
                             }
                         </React.Fragment>
                     </div>

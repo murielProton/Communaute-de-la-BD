@@ -15,6 +15,8 @@ exports.transformerListePseudoEnListe_id = async function transformerListePseudo
 
 exports.transformerListeGroupeNomEnListe_id = async function transformerListeGroupeNomEnListe_id(liste_groupe_nom) {
     let liste_groupe_object_id = [];
+    console.log("transformerListeGroupeNomEnListe_id");
+    console.log(liste_groupe_nom);
     for (let index = 0; index < liste_groupe_nom.length; index++) {
         let nom_groupe = liste_groupe_nom[index];
         let groupe = await Membre.findOne({ nom_groupe: nom_groupe }).populate();
@@ -23,5 +25,6 @@ exports.transformerListeGroupeNomEnListe_id = async function transformerListeGro
     }
     return liste_groupe_object_id;
 }
+
 
 /* FIN des FONCTIONS UTILES MEMBERS--------------------------------------------------------------------*/
