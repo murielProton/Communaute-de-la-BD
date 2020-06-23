@@ -1,3 +1,4 @@
+//je cherche un boeg qui fait oublier à mon app.js que les cookies existent
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom"; // Eu par npm install react-router-dom
 import Cookies from 'universal-cookie'; // Eu par npm install universal-cookie
@@ -35,6 +36,7 @@ import SupprimerCollection from './components/collection-supprimer.component';*/
 import CreationGroupe from './components/groupe-creation.component';
 import ListeGroupe from './components/groupe-liste.component';
 
+let cookie = new Cookies();
 
 function LiensAdmin(props) {
   let admin = props.admin;
@@ -48,6 +50,7 @@ function LiensAdmin(props) {
     </div>
   }
   return <div></div>
+
 }
 
 // Cette fonctions récupère props aller la voir en ligne 160 si on veut rajouter des cookies
@@ -58,7 +61,7 @@ function LiensDisponiblesQuandConnecte(props) {
   console.log("Je suis dans app.js Liens Disponibles quand on se connecte.");
   let url_profil = "/profil/";//A FAIRE Récupérer + membre._id;
   let url_profil_maj = "/maj/profil/";//A FAIRE Récupérer + membre._id;
-  if (props.pseudo) {
+  if (pseudo) {
     return <Nav className="mr-auto">
       <Nav.Link href="/liste/bede">Accueil</Nav.Link>
 
@@ -93,22 +96,20 @@ class App extends Component {
     this.setPseudo = this.setPseudo.bind(this);
     this.getPseudo = this.getPseudo.bind(this);
     this.setAdmin = this.setAdmin.bind(this);
+    //this.getAdmin = this.getAdmin.bind(this);
     this.setId = this.setId.bind(this);
-    
+    //this.getId = this.getId.bind(this);
+
+    // On ne passe pas par le setPseudo pour seter l'objet : Car on n'a pas le droit de l'appel pendant la construction.
     this.state = {
-      pseudo: null,
-      admin: null,
-      _id: null,
-      
+      pseudo: cookie.get('Session'),
+      admin: cookie.get('Session_admin') == 'true',
+      _id: cookie.get('Session_id')
     }
-    //changer la string arrivée en JSON en boolean
-    //Cookies set dans le construceurs pour qu'ils restent peut importe la page où l'on se trouve.
-    let cookie = new Cookies();
-    this.setPseudo(cookie.get('Session'));
   }
+  //setPseudo devrait s'appeler setCookie. 
   setPseudo(pseudo) {
     console.log("je suis dans l'app.js setPseudo");
-    let cookie = new Cookies();
     this.setState({ pseudo: pseudo });
     // ATTENTION les cookies sont des string, les boolean sont envoyés en string
     this.setAdmin(cookie.get('Session_admin') == 'true');

@@ -5,3 +5,4 @@ npm install axios
 npm install universall-cookie
 npm install react-bootstrap bootstrap
 npm install react-checkbox-list
+npm install --save-dev regenerator-runtime

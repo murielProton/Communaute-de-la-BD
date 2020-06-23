@@ -37,6 +37,7 @@
   }
 }
 
+
 .EcritureNoire{
   color: #37323e;
 }
@@ -51,4 +52,7 @@
 
 .nav-link:hover {
   color:#F7F9F9!important;
+}
+.container{
+  max-width: 2140px!important;
 }
