@@ -35,18 +35,34 @@ import SupprimerCollection from './components/collection-supprimer.component';*/
 import CreationGroupe from './components/groupe-creation.component';
 import ListeGroupe from './components/groupe-liste.component';
 
-// A FAIRE: si admin voit pas la même chose
 
+function LiensAdmin(props) {
+  let admin = props.admin;
+  console.log("liensAdmin admin ");
+  console.log(admin);
+  if (admin) {
+    return <div className="Admin">
+      <NavDropdown title="Administration" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/inscription" >Ajouter un membres</NavDropdown.Item>
+        <NavDropdown.Item href="/liste/membres" >Liste des membres</NavDropdown.Item>
+      </NavDropdown>
+    </div>
+  }
+  return <div></div>
+}
+
+// Cette fonctions récupère props aller la voir en ligne 160 si on veut rajouter des cookies
 function LiensDisponiblesQuandConnecte(props) {
-  const pseudo = props.pseudo;
-  const _id = props._id;
-  const admin = props.admin;
-  console.log("pseudo app.js props =" + pseudo);
-  console.log("admin app.js props=" + admin);
-  console.log("_id app.js props=" + _id);
+  let pseudo = props.pseudo;
+  let admin = props.admin;
+  let membre_id = props._id;
+  console.log("pseudo app.js props pseudo =" + props.pseudo);
+  console.log("admin app.js props admin =");
+  console.log(props.admin);
+  console.log("_id app.js props _id=" + props._id);
   let url_profil = "/profil/";//A FAIRE Récupérer + membre._id;
   let url_profil_maj = "/maj/profil/";//A FAIRE Récupérer + membre._id;
-  if (pseudo) {
+  if (props.pseudo) {
     return <Nav className="mr-auto">
       <Nav.Link href="/liste/bede">Accueil</Nav.Link>
 
@@ -54,29 +70,7 @@ function LiensDisponiblesQuandConnecte(props) {
         <NavDropdown.Item href="/ajout/bede" >Ajouter</NavDropdown.Item>
         <NavDropdown.Item href="/liste/bede" >Liste</NavDropdown.Item>
       </NavDropdown>
-{admin
-      ?<NavDropdown title="Administration" id="basic-nav-dropdown">
-        {/*A FAIRE séparer les routes inscription de ajouter un membre*/}
-        <NavDropdown.Item href="/inscription" >Ajouter</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/detail/membres/:id" >Details</NavDropdown.Item>*/}
-        <NavDropdown.Item href="/liste/membres" >Liste</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/maj/membres" >Mettre à Jour</NavDropdown.Item>*/}
-        {/*A FAIRE ? séparer les routes supprimer membre de supprimer profil*/}
-        {/*<NavDropdown.Item href="/supprimer/:id/:pseudo" >Supprimer</NavDropdown.Item>*/}
-        {/*<NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
-      </NavDropdown>
-      :<div></div>
-}
-      {/*<NavDropdown title={pseudo} id="basic-nav-dropdown">
-        <NavDropdown.Item href={url_profil} >Votre Profil</NavDropdown.Item>
-        <NavDropdown.Item href= {url_profil_maj} >Mettre à Jour</NavDropdown.Item>
-        <NavDropdown.Item href="/supprimer/:id/:pseudo" >Supprimer</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/maj/collection" >Mettre à Jour</NavDropdown.Item>
-        {/*<NavDropdown.Item href="/supprimer/collection" >Supprimer</NavDropdown.Item>
-        {/*<NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown>*/}
+      <LiensAdmin pseudo={props.pseudo} admin={props.admin} _id={props._id} />
       <div className="EcritureBlanche nav-link">{pseudo}</div>
       <Nav.Link href="/deconnexion">Se deconnecter</Nav.Link>
     </Nav>
@@ -97,55 +91,44 @@ class App extends Component {
     this.setPseudo = this.setPseudo.bind(this);
     this.getPseudo = this.getPseudo.bind(this);
     this.setAdmin = this.setAdmin.bind(this);
-    this.getAdmin = this.getAdmin.bind(this);
-    this.set_id = this.set_id.bind(this);
-    this.get_id = this.get_id.bind(this);
+    this.setId = this.setId.bind(this);
+    
     this.state = {
       pseudo: null,
       admin: null,
       _id: null,
-      cookies: new Cookies()
+      
     }
-    if (this.state.cookies.get('Session')) {
-      this.state = { pseudo: this.state.cookies.get('Session'),
-      admin : this.state.cookies.get('Session_admin'),
-      _id : this.state.cookies.get('Session_id') }
-    }
+    //changer la string arrivée en JSON en boolean
+    //Cookies set dans le construceurs pour qu'ils restent peut importe la page où l'on se trouve.
+    let cookie = new Cookies();
+    this.setPseudo(cookie.get('Session'));
   }
   setPseudo(pseudo) {
     let cookie = new Cookies();
     console.log("Vieux Pseudo app.js set Pseudo :" + this.state.pseudo);
-    this.setState({ pseudo: pseudo,
-      admin : cookie.get('Session_admin'),
-      _id : cookie.get('Session_id')
-    });
+    this.setState({ pseudo: pseudo });
     console.log("nouveau pseudo app.js set Pseudo:" + this.state.pseudo);
-    console.log("nouveau admin app.js  set Pseudo:" + this.state.admin);
-    console.log("nouveau _id app.js set Pseudo:" + this.state._id);
+    // ATTENTION les cookies sont des string, les boolean sont envoyés en string
+    this.setAdmin(cookie.get('Session_admin') == 'true');
+    this.setId(cookie.get('Session_id'));
+
   }
   getPseudo() {
     return this.state.pseudo;
   }
   setAdmin(admin) {
-    console.log("Vieux Admin app.js set admin: " + this.state.admin);
+    console.log("Vieux Admin app.js set admin: "+this.state.admin);
     this.setState({ admin: admin });
-    console.log("nouveau admin app.js set admin" + this.state.admin);
+    console.log("NEW Admin app.js get admin: "+this.state.admin);
   }
-  getAdmin() {
-    console.log("Admin app.js get admin: " + this.state.admin);
-    return this.state.admin;
-  }
-  set_id(_id) {
-    console.log("Vieux _id app.js set _id" + this.state._id)
+  setId(_id) {
     this.setState({ _id: _id });
-    console.log("nouveau _id app.js set _id" + this.state._id)
   }
-  get_id() {
-    return this.state._id;
-  }
-
 
   render() {
+    console.log("ADMIN RENDITION =>");
+    console.log(this.state.admin);//en premier c'est le boolean true puis il passe à la string ??? why ?!
     return (
       <Router>
         <div className="container EcritureNoire">
@@ -155,7 +138,6 @@ class App extends Component {
             <Navbar.Collapse id="basic-navbar-nav" />
             {/*A Faire ajouter le nom du membre connecté*/}
             <div className="collpase navbar-callapse">
-
               <LiensDisponiblesQuandConnecte pseudo={this.state.pseudo} admin={this.state.admin} _id={this.state._id} />
             </div>
           </Navbar>
