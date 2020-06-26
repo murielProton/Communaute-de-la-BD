@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import RechercheNom from './membre-nom-par-id.component';
 
 
 export default class ProfilMembre extends Component {
     constructor(props) {
         super(props);
-        this.state = { membres: []};
+        this.state = { 
+            membres: [],
+            composition_groupe: []
+        };
     }
     componentDidMount() {
         this.setState({ id: this.props.match.params.id });
@@ -17,7 +21,8 @@ export default class ProfilMembre extends Component {
         api.get('membre/profil/'+this.props.match.params.id)
             .then(response => {
                 console.log(response.data);
-                this.setState({ membres: response.data });
+                this.setState({ membres: response.data});
+                console.log("membres du groupe: ", this.state.composition_groupe)
              
             })
             .catch(function (err) {
@@ -31,7 +36,7 @@ export default class ProfilMembre extends Component {
         //formatage de la date entree dans mongodb avec new Intl
         return (
             <div class="container">
-                <h3>Mon profil </h3>
+                <h3>Profil </h3>
             {membres.map(membre =>( 
             <div class="card-container">  
                         <p key={membre.uid}>Pseudo : {membre.pseudo}</p>
@@ -40,9 +45,24 @@ export default class ProfilMembre extends Component {
                         <p key={membre.uid}>Ville: {membre.ville}</p>
                         <p key={membre.uid}>Membre depuis le: {new Intl.DateTimeFormat('fr-Fr',{ month:'long',day:'2-digit',year:'numeric'}).format(new Date(membre.date_inscription))}</p>
                 <div className="form-group">
-                <Link to={"/validmaj/"+this.state.id} className="btn btn-primary" >Modifier mon profil</Link>
-                <Link to={"/supprimer/"+ this.state.id + "/" + membre.pseudo} className="btn btn-danger">Supprimer mon compte</Link>
+                    <Link to={"/validmaj/"+this.state.id} className="btn btn-primary" >Modifier {membre.pseudo}</Link>
+                    <Link to={"/supprimer/"+ this.state.id + "/" + membre.pseudo} className="btn btn-danger">Supprimer {membre.pseudo}</Link>
                  </div>
+                 {membre.groupes.map(groupe =>(
+                     <div className="container">
+                         <p key={groupe.uid}>Nom du groupe: {groupe.nom_groupe}</p>
+                         <p key={groupe.uid}>administrateur du groupe:{groupe.admin_groupe}</p>
+                         <p>membres du groupe:</p>
+                         {groupe.membres_groupe.map(liste =>(
+                             <div>
+                                 {/* <p key={liste.uid}>Ville: <RechercheNom {...liste}/></p> */}
+                                 {/* <p key={liste.uid}>{liste}/</p> */}
+                                 {/* <Link to={"/detail/membre/"+ liste}>{liste}</Link> */}
+                                 <Link to={"/groupe/profil/detail/"+ liste}>{liste}</Link>
+                             </div>
+                         ))}
+                     </div>
+                 ))}
             </div>
              ) )}   
             </div>

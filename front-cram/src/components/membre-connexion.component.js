@@ -9,7 +9,7 @@ export default class ConnexionMembre extends Component {
     constructor(props) {
         super(props);
 
-        this.onChangePseudo = this.onChangePseudo.bind(this); // To make sure the connection will make with setState
+        this.onChangePseudo = this.onChangePseudo.bind(this); // Pour être sûr que la connexion se fera avec setState
         this.onChangeMotDePasse = this.onChangeMotDePasse.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
@@ -17,10 +17,12 @@ export default class ConnexionMembre extends Component {
             
             pseudo: "",
             mot_de_passe: "",
+            id: "",
             type: false,
             connection_fail: false,
             redirection: false,
-            cookies: new Cookies()
+            cookies: new Cookies(),
+            membre_banni: "",
         }
     }
 
@@ -37,9 +39,9 @@ export default class ConnexionMembre extends Component {
     }
 
     onSubmit(e) {
-        e.preventDefault(); // to prevent default submit behaviour
+        e.preventDefault(); // pour éviter d'envoyer des formulaires vides
 
-        console.log("Form submitted:");
+        console.log("Formulaire envoyé:");
         console.log('pseudo: ', this.state.pseudo);
         console.log('mot de passe: ', this.state.mot_de_passe);
 
@@ -53,11 +55,16 @@ export default class ConnexionMembre extends Component {
             .then(res => {
                 console.log(res.data);
                 console.log("Connexion réussie !!");
+
                 this.state.cookies.set('Session', this.state.pseudo, {path: '/', maxAge: 86400, sameSite:'Strict'}); // Le cookie a une vie de 24h (86400 secondes)
+                this.state.cookies.set('Session_id', res.data._id, {path: '/', maxAge: 86400, sameSite:'Strict'}); // Le cookie a une vie de 24h (86400 secondes)
+                this.state.cookies.set('Session_admin', res.data.admin, {path: '/', maxAge: 86400, sameSite:'Strict'}); // Le cookie a une vie de 24h (86400 secondes)
                 console.log("cookie", this.state.cookies.get('Session'));
-                // LoginProfile.setName(this.state.login);
-                // localStorage.setItem('username', this.state.login);
-                this.setState({ redirection: true })
+
+                this.setState({ 
+                    redirection: true,
+                    membre_banni: res.data,
+                 })
                 this.props.setPseudo(this.state.pseudo); // Permet de récupérer dans les autres fichiers ce que l'on mets dans le constructeur
             })
             .catch(err => {
@@ -68,11 +75,11 @@ export default class ConnexionMembre extends Component {
     }
 
     render() {
-        // const { redirection } = this.state;
-        // if (redirection) {
-        //  //Redirect to the page
-        //  return <Redirect to={`/a/${localStorage.getItem('username')}`}/>;
-        // }
+        const { redirection } = this.state;
+        if (redirection) {
+         //Redirect to the page
+         return <Redirect to="/"/>;
+        }
         return(
             <div style={{marginTop: 20}}>
                 <h3>Connexion</h3>
@@ -97,6 +104,9 @@ export default class ConnexionMembre extends Component {
                     </div>
                     {this.state.connection_fail === true &&
                         <p style={{color: "red"}}>Pseudonyme ou mot de passe incorrect !</p>
+                        }
+                        {this.state.membre_banni === "Le membre est banni" &&
+                        <h5 style={{color: "red"}}>Vous ne pouvez plus vous connecter ! votre compte est banni</h5>
                         }
                     <div className="form-group">
                         <input type="submit" value="Connexion" className="btn btn-primary" />

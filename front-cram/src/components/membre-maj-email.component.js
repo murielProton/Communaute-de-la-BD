@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom';
 import api from '../api';
+import Cookies from 'universal-cookie';
 
 export default class MajEmailMembre extends Component {
 
@@ -32,7 +33,8 @@ export default class MajEmailMembre extends Component {
             email_correct: true,
             membre_maj: false,
             pseudo_existe: false,
-            redirection:false
+            redirection:false,
+            cookies: new Cookies(),
         }
     }
     componentDidMount(){
@@ -134,18 +136,18 @@ if( RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.em
             ville:"",
             groupes:"",
             admin: false,
-            redirection:true
+            redirection:true,
+            membre_maj: true
         })
     }else if (!RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.email) ){
         this.setState({email_correct: false})
     }
 }
-
     render() {
-        if (this.state.redirection)
-        {
-            return <Redirect to='/liste/membres'/>;
-        } 
+        // if (this.state.redirection)
+        // {
+        //     return <Redirect to={`/profil/${this.props.match.params.id}`}/>;
+        // } 
         return (//Finally we need to add the JSX code which is needed to display the form
             <div style={{marginTop: 10}}>
                 <h3>Mise à jour de mon email</h3>
@@ -166,7 +168,10 @@ if( RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$').test(this.state.em
                         <input type="submit" value="Valider le changement d'email" className="btn btn-primary" />
                     </div>
                     {this.state.membre_maj === true &&
-                        <h4 style={{color: "green"}}>Nouvelle utilisateur crée !</h4>
+                        <div>
+                        <h4 style={{color: "green"}}>Email modifié !</h4>
+                        {/* <Link to={"/profil/"+ this.props.match.params.id} className="btn btn-primary"> Retour à mon profil</Link> */}
+                        </div>
                         }
                 </form>
                 <Link to={"/profil/"+ this.props.match.params.id} className="btn btn-primary"> Retour à mon profil</Link>

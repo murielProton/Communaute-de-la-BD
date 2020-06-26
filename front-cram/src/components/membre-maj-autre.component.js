@@ -109,16 +109,17 @@ const id= this.props.match.params.id
             ville:"",
             groupes:"",
             admin: false,
-            redirection:true
+            redirection:true,
+            membre_maj: true
         })
    
 }
 
 render() {
-    if (this.state.redirection) {
-     //Redirect to the page
-     return <Redirect to="/liste/membres"/>;
-    }
+    // if (this.state.redirection) {
+    //  //Redirect to the page
+    //  return <Redirect to="/liste/membres"/>;
+    // }
     return(
         <div style={{marginTop: 20}}>
             <h3>Modifier mon profil</h3>
@@ -144,6 +145,12 @@ render() {
                 <div className="form-group">
                     <input type="submit" value="Valider les changements" className="btn btn-primary" />
                 </div>
+                    {this.state.membre_maj === true &&
+                    <div>
+                    <h4 style={{color: "green"}}>Email modifié !</h4>
+                    {/* <Link to={"/profil/"+ this.props.match.params.id} className="btn btn-primary"> Retour à mon profil</Link> */}
+                    </div>
+                    } 
                 <Link to={"/profil/"+ this.props.match.params.id} className="btn btn-primary"> Retour à mon profil</Link>
             </form>
             

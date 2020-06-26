@@ -142,10 +142,9 @@ export default class InscriptionMembre extends Component {
     }
 
     render() {
-        // if (This.state.redirection) {
-        //  //Redirect to the page
-        //  return <Redirect to="/login"/>;
-        // }
+        if (this.state.redirection) { // Redirige vers la page de connexion
+         return <Redirect to="/connexion"/>;
+        }
         return(
             <div style={{marginTop: 20}}>
                 <h3>Inscription</h3>

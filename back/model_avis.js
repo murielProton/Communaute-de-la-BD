@@ -8,8 +8,16 @@ let Avis = new Schema({
         type: String, // _id de l'auteur
     },
 
-    avis: {
+    contenu: {
         type: String,
+    },
+
+    serie_bede: { // Permet de savoir pour quelle bédé (et quel tome), l'avis a été écrit lors de l'affichage de tous les avis
+        type: String,
+    },
+
+    tome_bede: {
+        type: Number,
     },
 
     date: { 

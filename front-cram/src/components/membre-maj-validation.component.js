@@ -98,7 +98,7 @@ export default class ValidMajMembre extends Component {
                         <p style={{color: "red"}}>Pseudonyme ou mot de passe incorrect !</p>
                         }
                     <div className="form-group">
-                        <input type="submit" value="Connexion" className="btn btn-primary" />
+                        <input type="submit" value="Valider" className="btn btn-primary" />
                     </div>
                 </form> 
             </div>

@@ -96,10 +96,10 @@ else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation){
     }
 
     render() {
-        if (this.state.redirection)
-        {
-            return <Redirect to='/liste/membres'/>;
-        } 
+        // if (this.state.redirection)
+        // {
+        //     return <Redirect to='/liste/membres'/>;
+        // } 
         return (//Finally we need to add the JSX code which is needed to display the form
             <div style={{marginTop: 10}}>
                 <h3>Mise à jour mon mot de passe</h3>
@@ -129,7 +129,7 @@ else if (this.state.mot_de_passe !== this.state.mot_de_passe_confirmation){
                         <input type="submit" value="Valider le changement de mot de passe" className="btn btn-primary" />
                     </div>
                     {this.state.membre_maj === true &&
-                        <h4 style={{color: "green"}}>Nouvelle utilisateur crée !</h4>
+                        <h4 style={{color: "green"}}>Mot de passe modifié !</h4>
                         }
                 </form>
                 <Link to={"/profil/"+ this.props.match.params.id} className="btn btn-primary"> Retour à mon profil</Link>

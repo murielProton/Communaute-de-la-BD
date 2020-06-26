@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import api from '../api';
-
+import Cookies from 'universal-cookie';
  
 
 export default class SupprimerMembre extends Component {
@@ -11,7 +11,8 @@ export default class SupprimerMembre extends Component {
        
         this.state = {
             id: this.props.match.params.id,
-            redirection: false
+            redirection: false,
+            cookies: new Cookies(),
         };
     }
    
@@ -34,6 +35,7 @@ export default class SupprimerMembre extends Component {
     render() {
         if (this.state.redirection)
         {
+            this.state.cookies.remove('Session');
             return <Redirect to='/'/>;
         } 
         return (

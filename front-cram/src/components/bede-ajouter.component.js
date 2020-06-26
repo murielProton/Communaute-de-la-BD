@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import api from '../api'; // Permet de simplifier la requête axios et surtout de modifier plus facilement l'adresse du back lors du déploiement
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 
 export default class AjoutBede extends Component {
 
@@ -29,7 +31,8 @@ export default class AjoutBede extends Component {
             bede_cree: false,
             serie_correct: true,
             titre_correct: true,
-            tome_correct: true
+            tome_correct: true,
+            cookies: new Cookies(),
         }
     }
 
@@ -94,7 +97,8 @@ export default class AjoutBede extends Component {
             scenariste: this.state.scenariste,
             dessinateur: this.state.dessinateur,
             editeur: this.state.editeur,
-            annee_parution: this.state.annee_parution
+            annee_parution: this.state.annee_parution,
+            derniere_modification: this.state.cookies.get('Session'),
         }
 
         if(this.state.serie.length > 0
@@ -102,21 +106,26 @@ export default class AjoutBede extends Component {
             && this.state.tome.length > 0) {
                 console.log('dans le if');
                 api.post('bede/ajout', nouvelleBede) // Cette requête permet d'ajouter la nouvelle bédé
-                    .then(res => console.log(res.data));
+                    .then(res => {
+                    api.get('collection/ajouter/' + res.data._id + '/' + this.state.cookies.get('Session')) // Intègre la bédé crée à la collection
+                    console.log("Resultat enregistrement: ", res.data)
+                    });
                     console.log('après la requête dans le back');
                     console.log('Nouvelle bd: ', nouvelleBede);
+                    console.log("id enregistré: ", this.state.id_bede_a_ajouter_dans_collection);
         
                     this.setState({
-                        serie: "",
+                        // serie: "",
                         titre: "",
                         tome: "",
-                        scenariste: [],
-                        dessinateur: [],
+                        // scenariste: [],
+                        // dessinateur: [],
                         editeur: "",
                         annee_parution: "",
                         redirection: true,
-                        bede_cree: true
+                        bede_cree: true,
                     })
+
                     // .catch(err => {
                     //     console.log(err);
                     // })
@@ -138,15 +147,19 @@ export default class AjoutBede extends Component {
     }
 
     render() {
+        // if (this.state.redirection) { // Redirige vers la collection de l'utilisateur
+        // return <Redirect to={`/collection/rechercher/ajouter`}/>;
+        //    }
+
         return(
             <div style={{marginTop: 20}}>
             <h3>Ajouter une nouvelle bande dessinée</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Série: </label>
+                        <label>**Série: </label>
                         <input  type="text"
                                 className="form-control"
-                                placeholder="Nom de la série"
+                                placeholder="Merci de respecter la nomenclature: La Quête de l'Oiseau du Temps, Universal War One...."
                                 value={this.state.serie}
                                 onChange={this.onChangeSerie}
                                 />
@@ -155,10 +168,10 @@ export default class AjoutBede extends Component {
                         }
                     </div>
                     <div className="form-group">
-                        <label>Titre: </label>
+                        <label>**Titre: </label>                        
                         <input  type="text"
                                 className="form-control"
-                                placeholder="Titre du tome"
+                                placeholder="Merci de respecter la nomenclature: La conque de Ramor, Le déluge..."
                                 value={this.state.titre}
                                 onChange={this.onChangeTitre}
                                 />
@@ -167,7 +180,7 @@ export default class AjoutBede extends Component {
                         }
                     </div>
                     <div className="form-group">
-                        <label>Tome: </label>
+                        <label>**Tome: </label>
                         <input  type="number"
                                 // className="form-control"
                                 min="0"
@@ -218,7 +231,8 @@ export default class AjoutBede extends Component {
                         <input type="submit" value="Ajouter" className="btn btn-primary" />
                     </div>
                     {this.state.bede_cree === true &&
-                        <h4 style={{color: "green"}}>Nouvelle bande dessinée ajoutée !</h4>
+                        <h4 style={{color: "green"}}>Nouvelle bande dessinée créée et ajoutée à votre collection !
+                        Voulez-vous ajouter le tome suivant ou retourner à votre <Link to={"/collection/afficher/" + this.state.cookies.get('Session')}>collection</Link></h4>
                         }
                 </form>
             </div>

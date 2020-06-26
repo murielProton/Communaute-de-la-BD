@@ -17,11 +17,10 @@ let Collection = new Schema({
         type: Date,
     },
 
-    liste: { 
-        type: Array, 
-        default: [],
-    },
-
-
+    // liste: { 
+    //     type: Array, 
+    //     default: [],
+    // },
+    bedes: [{type: Schema.Types.ObjectId, ref:'Bede'}]
 });
 module.exports = mongoose.model('Collection', Collection);

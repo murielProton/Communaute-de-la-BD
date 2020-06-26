@@ -39,7 +39,7 @@ let Membre = new Schema({
 
     admin: { 
         type: Boolean,
-        default: false // A mettre true si on veux créer un admin et comment ligne 26 et 119 dans le component inscription 
+        default: false // A mettre true si on veux créer un admin et commenter les lignes 26 et 119 dans le component inscription 
     },
 
     banni: {

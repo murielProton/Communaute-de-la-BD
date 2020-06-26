@@ -10,14 +10,17 @@ export default class Deconnection extends Component {
         const cookies = new Cookies();
 
         cookies.remove('Session');
+        cookies.remove('Session_id');
+        cookies.remove('Session_admin');
         console.log("deconnection");
         this.props.setPseudo(null);
     }
     render() {
     return(
         <div>
-            <Redirect to="/connexion"/>;
+            <Redirect to="/"/>;
         </div>
     );
     }
 }
+
