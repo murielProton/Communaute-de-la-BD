@@ -39,8 +39,41 @@ async function cetEmailEstUniqueEnCollection(req) {
 }
 // email = regex email
 async function estEmailValide(req) {
-    const regexMail = RegExp('^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$');
+    console.log("je rentre dans la fonction estEmailValide");
+    const regexMail = RegExp('^[a-zA-Z0-9_.%+-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z0-9_.-]{2,5}$');
     if (!regexMail.test(req.body.email)) {
+        console.log("estEmailValide == false");
+        return false;
+    } else {
+        console.log("estEmailValide == true");
+        return true;
+    }
+}
+function estMotDePasseEgaleAuMDPConfirmation(req) {
+    let mot_de_passe = req.body.mot_de_passe;
+    let mot_de_passe_confirmation = req.body.mot_de_passe_confirmation;
+    if (mot_de_passe != mot_de_passe_confirmation) {
+        console.log("Mot de Passe = " + req.body.mot_de_passe + " & confirmation = " + req.body.mot_de_passe_confirmation);
+        console.log("Mot de Passe différent de sa confirmation.");
+        return false;
+    } else {
+        console.log("Mot de Passe identique à sa confirmation.");
+        return true;
+    }
+}
+function estLaDateNaissanceValide(req) {
+    if (req.body.date_de_naissance < "1900-01-01" ||
+        req.body.date_de_naissance > Date.now()) {
+        console.log("erreur sur la date de naissance");
+        return false;
+    } else {
+        return true;
+    }
+}
+function estLaDateInscriptionValide(req) {
+    console.log("date now " +Date.now());
+    if (req.body.date_inscription != Date.now()) {
+        console.log("erreur sur la date d'inscription.");
         return false;
     } else {
         return true;
@@ -48,35 +81,46 @@ async function estEmailValide(req) {
 }
 
 exports.generateurErreursInscription = async function generateurErreursInscription(req) {
+    let err = [];
     console.log("je rentre dans la fonciton generateur d' Erreurs d'inscription.");
-    let erreurs = [];
+    console.log("email" + req.body.email);
     /** DEBUT : On fait les contrôles */
-    //tester si le pseudo est de la bonne longeure
-    if (motDeLaBonneLongeure(req, 4, 20, req.body.pseudo) == false) {
-        erreurs.push("votre pseudo doit comprendre entre 4 et 20 charactères.")
-    }/*
-    if (await cePseudoEstUniqueEnCollection(req) == false) {
-        erreurs.push("Ce pseudo est déjà dans notre base de donnée, veuillez en entrer un nouveau.")
+    //tester si la longueur du pseudo est entre 4 et 21
+    if (motDeLaBonneLongeure(req, 4, 21, req.body.pseudo) == false) {
+        err.push("votre pseudo doit comprendre entre 4 et 20 charactères.")
     }
-    if (await cetEmailEstUniqueEnCollection(req) == false) {
-        erreurs.push("Cet email est déjà dans notre base de donnée, veuillez en entrer un nouveau.")
+    //tester si le pseudo éxiste déjà
+    if (await cePseudoEstUniqueEnCollection(req) == false) {
+        err.push("Ce pseudo est déjà dans notre base de donnée, veuillez en entrer un nouveau.")
     }
     if (await estEmailValide(req) == false) {
-        erreurs.push("Cet email : " + req.body.email + ", n'est pas valide.");
+        err.push("Cet email : " + req.body.email + ", n'est pas valide.");
+        console.log("generateur d'erreur email regex test.");
     }
-    var mot_de_passeCourrant = req.body.mot_de_passe;
-    var tropPetit = mot_de_passeCourrant.length < 6;
-    if (tropPetit) {
-        erreurs.push("Pour des raisons de sécurité votre mot de passe doit plus long.");
+    //tester si la longueur du mot de passe est entre 4 et 21
+    if (motDeLaBonneLongeure(req, 4, 21, req.body.mot_de_passe) == false) {
+        err.push("votre mot de passe doit comprendre entre 4 et 20 charactères.")
     }
-    var courentMot_de_passeConf = req.body.password_confirmation;
-    if (courentMot_de_passe != courentMot_de_passeConf) {
-        console.log("je passe dans le if le password est différent de password confirmation");
-        erreurs.push("Invalide password  confirmation.");
+    // tester si le mot de passe est équivalant au mot de passe confirmé.
+    if (estMotDePasseEgaleAuMDPConfirmation(req) == false) {
+        err.push("Mot de passe incorrecte.");
+        console.log("mot de passe différent de mot de passe confirmation.");
+    }
+
+    /*A FAIRE tester la date de naissance à date actuelle -120ans
+    if (estLaDateNaissanceValide(req) == false ){
+        err.push("Date de naissance impossible.");
+        console.log("Date de naissance impossible.");
     }*/
-    /** FIN : On fait les contrôles **/
-    return erreurs;
+    /*A FAIRE tester date d'inscription == aujourd'hui
+    if (estLaDateInscriptionValide(req) == false) {
+        err.push("Date d'inscription impossible.");
+        console.log("Date d'inscription impossible.");
+    }*/
+    return err;
 }
+// Fonction qui converti les mots de passes en sha1
+
 exports.toSha1 = function toSha1(password) {
     // On crée notre Hasher avec l'algo qu'on veux
     var shasum = crypto.createHash('sha1');
