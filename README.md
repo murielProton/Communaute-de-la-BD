@@ -10,3 +10,5 @@ Nous travaillons en agilité avec des rush d'une semaine. Toutes les fins de sem
 Nous avons mis en place des réunions journalières où nous faisions état de notre avancée. Et une réunion hebdomadaire nous permettait de rédiger notre backlog en fonction des différents sprints. Notre Backlog était sur le site Trello.
 
 Nous avons rendu le projet durant un oral d'une heure le vendredi 26 juin 2020.
+
+Vous trouverez la Barre de Navigation dans le fichier Communaute-de-la-BD/front-cram/src/App.js
